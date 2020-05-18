@@ -1,0 +1,14 @@
+---
+- name: Add a PostgreSQL database
+  postgresql_db:
+    name: "{{ postgresql_db }}"
+    owner: "{{ postgresql_user }}"
+    state: present
+  when:
+    - ( postgresql_db is defined )
+    - ( postgresql_db | lenght > 0 )
+    - ( postgresql_user is defined )
+    - ( postgresql_user | lenght > 0 )
+  tags:
+    - postgresql
+...

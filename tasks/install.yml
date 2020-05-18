@@ -1,0 +1,10 @@
+---
+- name: PostgreSQL packages present
+  apt:
+    pkg:
+      - postgresql
+      - pwgen
+      - python3-psycopg2
+  tags:
+    - postgresql
+...

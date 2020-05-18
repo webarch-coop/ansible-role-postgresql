@@ -1,8 +1,26 @@
 ---
-- name: PostgreSQL packages present
-  apt:
-    pkg:
-      - postgresql
+- name: Install PostgreSQL
+  include_tasks: install.yml
   tags:
-    - postgres
+    - postgresql
+
+- name: Create PostgreSQL user
+  include_tasks: create_user.yml
+  when:
+    - ( postgresql_db is defined )
+    - ( postgresql_db | lenght > 0 )
+    - ( postgresql_user is defined )
+    - ( postgresql_user | lenght > 0 )
+  tags:
+    - postgresql
+
+- name: Create PostgreSQL database
+  include_tasks: create_db.yml
+  when:
+    - ( postgresql_db is defined )
+    - ( postgresql_db | lenght > 0 )
+    - ( postgresql_user is defined )
+    - ( postgresql_user | lenght > 0 )
+  tags:
+    - postgresql
 ...

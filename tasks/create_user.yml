@@ -1,0 +1,35 @@
+---
+- name: PostgreSQL user present
+  block:
+
+    - name: "PostgreSQL password for {{ postgresql_user }} present"
+      shell: "pwgen -n 20 1 > /root/.postgresql.{{ postgresql_user }}.passwd"
+      args:
+        creates: "/root/.postgresql.{{ postgresql_user }}.passwd"
+      when: ( postgresql_passwd_file not is defined ) or ( postgresql_passwd_file.stat.exists  == False )
+
+    - name: "PostgreSQL password /root/.postgresql.{{ postgresql_user }}.passwd slurped"
+      slurp:
+        src: "/root/.postgresql.{{ postgresql_user }}.passwd"
+      register: postgresql_passwd_file_b64encoded
+
+    - name: Fact set for the PostgreSQL password
+      set_fact:
+        postgresql_passwd: "{{ postgresql_passwd_file_b64encoded['content'] | b64decode | trim }}"
+
+    - name: PostgreSQL user present
+      postgresql_user:
+        name: "{{ postgresql_user }}"
+        password: "{{ postgresql_passwd }}"
+        db: "{{ postgresql_db }}"
+        priv: ALL
+        state: present
+
+  when:
+    - ( postgresql_db is defined )
+    - ( postgresql_db | lenght > 0 ) 
+    - ( postgresql_user is defined )
+    - ( postgresql_user | lenght > 0 )
+  tags:
+    - postgresql
+...
