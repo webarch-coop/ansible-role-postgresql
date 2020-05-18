@@ -27,7 +27,7 @@
 
   when:
     - ( postgresql_db is defined )
-    - ( postgresql_db | lenght > 0 ) 
+    - ( postgresql_db | lenght > 0 )
     - ( postgresql_user is defined )
     - ( postgresql_user | lenght > 0 )
   tags:
