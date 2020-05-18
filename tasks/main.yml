@@ -1,0 +1,8 @@
+---
+- name: PostgreSQL packages present
+  apt:
+    pkg:
+      - postgresql
+  tags:
+    - postgres
+...
