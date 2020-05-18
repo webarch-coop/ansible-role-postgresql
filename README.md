@@ -1,5 +1,9 @@
 # Ansible role to install PostgresSQL
 
+If the `postgresql_user` and `postgresql_db` variables are defined then a user
+and database are created and the password is written to `/root/postgresql.{{
+postgresql_user }}.passwd` file.
+
 See the Ansible
 [postgresql_user](https://docs.ansible.com/ansible/latest/modules/postgresql_user_module.html)
 and
