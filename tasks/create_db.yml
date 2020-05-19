@@ -2,8 +2,8 @@
 - name: Add a PostgreSQL database
   postgresql_db:
     name: "{{ postgresql_db }}"
-    owner: "{{ postgresql_user }}"
     state: present
+  become: true
   become_user: postgres
   when:
     - ( postgresql_db is defined )
