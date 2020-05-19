@@ -23,6 +23,7 @@
         db: "{{ postgresql_db }}"
         priv: ALL
         state: present
+      become_user: postgres
 
   when:
     - ( postgresql_db is defined )

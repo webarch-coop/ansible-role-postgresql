@@ -4,6 +4,7 @@
     name: "{{ postgresql_db }}"
     owner: "{{ postgresql_user }}"
     state: present
+  become_user: postgres
   when:
     - ( postgresql_db is defined )
     - ( postgresql_db | length > 0 )
