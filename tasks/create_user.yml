@@ -6,7 +6,6 @@
       shell: "pwgen -n 20 1 > /root/.postgresql.{{ postgresql_user }}.passwd"
       args:
         creates: "/root/.postgresql.{{ postgresql_user }}.passwd"
-      when: ( postgresql_passwd_file not is defined ) or ( postgresql_passwd_file.stat.exists  == False )
 
     - name: "PostgreSQL password /root/.postgresql.{{ postgresql_user }}.passwd slurped"
       slurp:
