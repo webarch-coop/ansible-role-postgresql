@@ -8,9 +8,9 @@
   include_tasks: create_user.yml
   when:
     - ( postgresql_db is defined )
-    - ( postgresql_db | lenght > 0 )
+    - ( postgresql_db | length > 0 )
     - ( postgresql_user is defined )
-    - ( postgresql_user | lenght > 0 )
+    - ( postgresql_user | length > 0 )
   tags:
     - postgresql
 
@@ -18,9 +18,9 @@
   include_tasks: create_db.yml
   when:
     - ( postgresql_db is defined )
-    - ( postgresql_db | lenght > 0 )
+    - ( postgresql_db | length > 0 )
     - ( postgresql_user is defined )
-    - ( postgresql_user | lenght > 0 )
+    - ( postgresql_user | length > 0 )
   tags:
     - postgresql
 ...
