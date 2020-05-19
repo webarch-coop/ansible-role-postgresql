@@ -4,17 +4,20 @@
 
     - name: "PostgreSQL password for {{ postgresql_user }} present"
       shell: "pwgen -n 20 1 > /root/.postgresql.{{ postgresql_user }}.passwd"
+      no_log: true
       args:
         creates: "/root/.postgresql.{{ postgresql_user }}.passwd"
 
     - name: "PostgreSQL password /root/.postgresql.{{ postgresql_user }}.passwd slurped"
       slurp:
         src: "/root/.postgresql.{{ postgresql_user }}.passwd"
+      no_log: true
       register: postgresql_passwd_file_b64encoded
 
     - name: Fact set for the PostgreSQL password
       set_fact:
         postgresql_passwd: "{{ postgresql_passwd_file_b64encoded['content'] | b64decode | trim }}"
+      no_log: true
 
     - name: PostgreSQL user present
       postgresql_user:
