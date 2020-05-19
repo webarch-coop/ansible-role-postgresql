@@ -4,6 +4,7 @@
     pkg:
       - postgresql
       - pwgen
+      - python-psycopg2
       - python3-psycopg2
   tags:
     - postgresql
