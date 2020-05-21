@@ -6,12 +6,12 @@
       slurp:
         src: "{{ postgresql_postgres_home }}/.pgpass"
       register: postgresql_pgpass_b64encoded
-      # no_log: true
+      no_log: true
 
     - name: "Set an array for the lines in the {{ postgresql_postgres_home }}/.pgpass file"
       set_fact:
         postgresql_pgpass_lines: "{{ ( postgresql_pgpass_b64encoded['content'] | b64decode | trim ).split('\n') }}"
-      # no_log: true
+      no_log: true
 
     - name: "Read the {{ postgresql_user }} password line from the postgresql_pgpass_lines array and split it into another array and save the 5th value"
       set_fact:
@@ -20,9 +20,7 @@
       loop: "{{ postgresql_pgpass_lines }}"
       loop_control:
         loop_var: line
-      # no_log: true
-
-    - fail:
+      no_log: true
 
     # TODO Check that the password works and if it doesn't delete the line
     # and set postgresql_password back to an empty string
