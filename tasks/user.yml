@@ -20,10 +20,11 @@
         var: postgresql_postgres_home
         verbosity: 1
 
-    - name: Set the postgresql_password variable to be an empty string and set postgresql_pgpass_line
+    - name: Set the postgresql_password variable to be an empty string and set postgresql_pgpass_line and postgresql_pgpass_lines
       set_fact:
         postgresql_password: ""
         postgresql_pgpass_line: "{{ postgresql_host }}:{{ postgresql_port }}:{{ postgresql_db }}:{{ postgresql_user }}"
+        postgresql_pgpass_lines: []
 
     - name: "Check if {{ postgresql_postgres_home }}/.pgpass exists"
       stat:
