@@ -15,20 +15,29 @@
 
     - name: "Read the {{ postgresql_user }} password line from the postgresql_pgpass_lines array"
       set_fact:
-        postgresql_pgpass_line_required: "{{ line }}"
+        postgresql_password: "{{ line.split(':')[5] }}"
       when: postgresql_pgpass_line in line
       loop: "{{ postgresql_pgpass_lines }}"
       loop_control:
         loop_var: line
       # no_log: true
 
-    - debug:
-        var: postgresql_pgpass_line_required
-
-    - name: "Set a fact for the {{ postgresql_user }} password"
-      set_fact:
-        postgresql_password: "{{ postgresql_password_line_required.split(':')[5] }}"
-      # no_log: true
+#    - name: "Read the {{ postgresql_user }} password line from the postgresql_pgpass_lines array"
+#      set_fact:
+#        postgresql_pgpass_line_required: "{{ line }}"
+#      when: postgresql_pgpass_line in line
+#      loop: "{{ postgresql_pgpass_lines }}"
+#      loop_control:
+#        loop_var: line
+#      # no_log: true
+#
+#    - debug:
+#        var: postgresql_pgpass_line_required
+#
+#    - name: "Set a fact for the {{ postgresql_user }} password"
+#      set_fact:
+#        postgresql_password: "{{ postgresql_password_line_required.split(':')[5] }}"
+#      # no_log: true
 
     # TODO Check that the password works and if it doesn't delete the line
     # and set postgresql_password back to an empty string
