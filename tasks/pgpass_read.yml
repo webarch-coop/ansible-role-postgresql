@@ -10,7 +10,7 @@
 
     - name: "Set a fact for the {{ postgresql_postgres_home }}/.pgpass contents"
       set_fact:
-        postgresql_pgpass_lines: "{{ ( postgresql_pgpass_b64encoded['content'] | b64decode ).splitlines() }}"
+        postgresql_pgpass_lines: "{{ ( postgresql_pgpass_b64encoded['content'] | b64decode ).split('\n') }}"
       # no_log: true
 
     - name: "Read the {{ postgresql_user }} password from the file"
