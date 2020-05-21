@@ -87,7 +87,10 @@
             mode: 0600
           no_log: true
 
-      when: postgresql_password | length <= 0
+      when:
+        - ( postgresql_home_pgpass_stat is defined )
+        - ( not postgresql_home_pgpass_stat.stat.exists )
+        - ( postgresql_password is not defined ) or ( postgresql_password is defined and postgresql_password | length <= 0 )
 
     - name: PostgreSQL user present
       postgresql_user:
