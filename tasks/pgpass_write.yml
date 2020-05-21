@@ -13,9 +13,9 @@
         postgresql_password: "{{ postgresql_pwgen.stdout | trim }}"
       no_log: true
 
-    - name: "Password written to {{ postgresql_home }}/.pgpass"
+    - name: "Password written to {{ postgresql_postgres_home }}/.pgpass"
       lineinfile:
-        path: "{{ postgresql_home }}/.pgpass"
+        path: "{{ postgresql_postgres_home }}/.pgpass"
         line: "{{ postgresql_pgpass_line }}:{{ postgresql_password }}"
         state: present
         create: true

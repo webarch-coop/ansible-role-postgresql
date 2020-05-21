@@ -8,7 +8,7 @@
 
     - name: Set a variable for the HOME directory of the postgres user
       set_fact:
-        postgresql_home: "{{ user.value[4] }}"
+        postgresql_postgres_home: "{{ user.value[4] }}"
       when: user.key == "postgres"
       loop: "{{ getent_passwd | dict2items }}"
       loop_control:
@@ -17,26 +17,27 @@
 
     - name: Debug the postgres HOME directory
       debug:
-        var: postgresql_home
+        var: postgresql_postgres_home
         verbosity: 1
 
-    - name: Set the postgresql_password variable to be an empty string
+    - name: Set the postgresql_password variable to be an empty string and set postgresql_pgpass_line 
       set_fact:
         postgresql_password: ""
+        postgresql_pgpass_line: "{{ postgresql_host }}:{{ postgresql_port }}:{{ postgresql_db }}:{{ postgresql_user }}"
 
-    - name: "Check if {{ postgresql_home }}/.pgpass exists"
+    - name: "Check if {{ postgresql_postgres_home }}/.pgpass exists"
       stat:
-        path: "{{ postgresql_home }}/.pgpass"
-      register: postgresql_home_pgpass_stat
+        path: "{{ postgresql_postgres_home }}/.pgpass"
+      register: postgresql_postgres_home_pgpass_stat
 
     - name: Read the PostgreSQL password from the .pgpass file
       include_tasks: pgpass_read.yml
-      when: ( postgresql_home_pgpass_stat is defined ) and ( postgresql_home_pgpass_stat.stat.exists )
+      when: ( postgresql_postgres_home_pgpass_stat is defined ) and ( postgresql_postgres_home_pgpass_stat.stat.exists )
     
     - name: Generate a PostgreSQL password and write it to .pgpass
       include_tasks: pgpass_write.yml
       when:
-        - ( postgresql_home_pgpass_stat is defined ) and ( not postgresql_home_pgpass_stat.stat.exists )
+        - ( postgresql_postgres_home_pgpass_stat is defined ) and ( not postgresql_postgres_home_pgpass_stat.stat.exists )
         - ( postgresql_password is not defined ) or ( postgresql_password is defined and postgresql_password | length <= 0 )
 
     - name: PostgreSQL user present
