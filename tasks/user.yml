@@ -20,7 +20,7 @@
         var: postgresql_postgres_home
         verbosity: 1
 
-    - name: Set the postgresql_password variable to be an empty string and set postgresql_pgpass_line 
+    - name: Set the postgresql_password variable to be an empty string and set postgresql_pgpass_line
       set_fact:
         postgresql_password: ""
         postgresql_pgpass_line: "{{ postgresql_host }}:{{ postgresql_port }}:{{ postgresql_db }}:{{ postgresql_user }}"
@@ -33,7 +33,7 @@
     - name: Read the PostgreSQL password from the .pgpass file
       include_tasks: pgpass_read.yml
       when: ( postgresql_postgres_home_pgpass_stat is defined ) and ( postgresql_postgres_home_pgpass_stat.stat.exists )
-    
+
     - name: Generate a PostgreSQL password and write it to .pgpass
       include_tasks: pgpass_write.yml
       when:
