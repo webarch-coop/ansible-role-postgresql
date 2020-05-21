@@ -8,9 +8,9 @@
       register: postgresql_pgpass_b64encoded
       # no_log: true
 
-    - name: "Set a fact for the {{ postgresql_postgres_home }}/.pgpass contents"
+    - name: "Set an array for the lines in the {{ postgresql_postgres_home }}/.pgpass file"
       set_fact:
-        postgresql_pgpass_lines: "{{ ( postgresql_pgpass_b64encoded['content'] | b64decode ).split('\n') }}"
+        postgresql_pgpass_lines: "{{ ( postgresql_pgpass_b64encoded['content'] | b64decode | trim ).split('\n') }}"
       # no_log: true
 
     - name: "Read the {{ postgresql_user }} password line from the file"
