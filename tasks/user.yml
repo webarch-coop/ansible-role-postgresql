@@ -92,7 +92,7 @@
     - name: PostgreSQL user present
       postgresql_user:
         name: "{{ postgresql_user }}"
-        password: "{{ postgresql_passwd }}"
+        password: "{{ postgresql_password }}"
         db: "{{ postgresql_db }}"
         priv: ALL
         state: present
