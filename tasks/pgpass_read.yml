@@ -15,12 +15,17 @@
 
     - name: "Read the {{ postgresql_user }} password line from the postgresql_pgpass_lines array"
       set_fact:
-        postgresql_password: "{{ line.split(':')[5] }}"
+        postgresql_pgpass_line_elements: "{{ line.split(':') }}"
       when: postgresql_pgpass_line in line
       loop: "{{ postgresql_pgpass_lines }}"
       loop_control:
         loop_var: line
       # no_log: true
+
+    - debug:
+        var: postgresql_pgpass_line_elements
+
+    - fail:
 
 #    - name: "Read the {{ postgresql_user }} password line from the postgresql_pgpass_lines array"
 #      set_fact:
