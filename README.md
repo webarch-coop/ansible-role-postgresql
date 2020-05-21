@@ -1,11 +1,16 @@
 # Ansible role to install PostgresSQL
 
-If the `postgresql_user` and `postgresql_db` variables are defined then a user
-and database are created and a random password for the account is written to
-`/root/postgresql.{{ postgresql_user }}.passwd` file.
+This role has been designed to:
 
-This role uses the
-[postgresql_user](https://docs.ansible.com/ansible/latest/modules/postgresql_user_module.html)
-and
-[postgresql_db](https://docs.ansible.com/ansible/latest/modules/postgresql_db_module.html)
-Ansible modules.
+* Install PostgresSQL on Debian
+* Create a database and user
+* Write the login details to the `postgres` users `$HOME/.pgpass` file
+
+In the future support for ensuring that an array or dictionary of databases and
+users are present might be added.
+
+## Links
+
+* The Debian [PostgreSQL](https://wiki.debian.org/PostgreSql) wiki page
+* The Ansible [postgresql_user](https://docs.ansible.com/ansible/latest/modules/postgresql_user_module.html) module
+* The Ansible [postgresql_db](https://docs.ansible.com/ansible/latest/modules/postgresql_db_module.html) modules

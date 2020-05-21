@@ -20,24 +20,74 @@
         var: postgresql_home
         verbosity: 1
 
-    - fail:
-
-    - name: "PostgreSQL password for {{ postgresql_user }} present"
-      shell: "pwgen -n 20 1 > /root/.postgresql.{{ postgresql_user }}.passwd"
-      no_log: true
-      args:
-        creates: "/root/.postgresql.{{ postgresql_user }}.passwd"
-
-    - name: "PostgreSQL password /root/.postgresql.{{ postgresql_user }}.passwd slurped"
-      slurp:
-        src: "/root/.postgresql.{{ postgresql_user }}.passwd"
-      no_log: true
-      register: postgresql_passwd_file_b64encoded
-
-    - name: Fact set for the PostgreSQL password
+    - name: Set the postgresql_password variable to be an empty string
       set_fact:
-        postgresql_passwd: "{{ postgresql_passwd_file_b64encoded['content'] | b64decode | trim }}"
-      no_log: true
+        postgresql_password: ""
+
+    - name: "Check if {{ postgresql_home }}/.pgpass exists"
+      stat:
+        path: "{{ postgresql_home }}/.pgpass"
+      register: postgresql_home_pgpass_stat
+
+    - name: Read the PostgreSQL password from the .pgpass file
+      block:
+
+        - name: "Slurp {{ postgresql_home }}/.pgpass"
+          slurp:
+            src: "{{ postgresql_home }}/.pgpass"
+          register: postgresql_pgpass_b64encoded
+
+        - name: "Set a fact for the {{ postgresql_home }}/.pgpass contents and the string we want to match"
+          set_fact:
+            postgresql_pgpass_lines: "{{ postgresql_pgpass_b64encoded['content'] | b64decode }}"
+            postgresql_pgpass_line: "{{ postgresql_host }}:{{ postgresql_port }}:{{ postgresql_db }}:{{ postgresql_user }}"
+          no_log: true
+
+        - name: "Read the {{ postgresql_user }} password from the file"
+          set_fact:
+            postgresql_password: "{{ line.split(':')[5] }}" 
+          when: postgresql_pgpass_line in line
+          loop: "{{ postgresql_pgpass_lines }}"
+          loop_control:
+            loop_var: line
+
+        - name: Debug password
+          debug:
+            var: postgresql_password
+            verbosity: 2
+
+        # TODO Check that the password works and if it doesn't delete the line
+        # and set postgresql_password back to an empty string
+
+      when:
+        - ( postgresql_home_pgpass_stat is defined )
+        - ( postgresql_home_pgpass_stat.stat.exists )
+    
+    - name: Generate a PostgreSQL password and write it to .pgpass
+      block:
+
+        - name: PostgreSQL password generated
+          command: pwgen -n 20 1
+          register: postgresql_pwgen
+          check_mode: false
+          no_log: true
+
+        - name: Set a fact for the PostgreSQL password
+          set_fact:
+            postgresql_password: "{{ postgresql_pwgen.stdout | trim }}"
+          no_log: true
+ 
+        - name: "Password written to {{ postgresql_home }}/.pgpass"
+          lineinfile:
+            path: "{{ postgresql_home }}/.pgpass"
+            line: "{{ postgresql_pgpass_line }}:{{ postgresql_password }}"
+            create: true
+            owner: postgres
+            group: postgres
+            mode: 0600
+          no_log: true
+
+      when: postgresql_password | length <= 0
 
     - name: PostgreSQL user present
       postgresql_user:
