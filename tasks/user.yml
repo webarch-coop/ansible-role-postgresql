@@ -81,11 +81,12 @@
           lineinfile:
             path: "{{ postgresql_home }}/.pgpass"
             line: "{{ postgresql_pgpass_line }}:{{ postgresql_password }}"
+            state: present
             create: true
             owner: postgres
             group: postgres
             mode: 0600
-          no_log: true
+          # no_log: true
 
       when:
         - ( postgresql_home_pgpass_stat is defined )
