@@ -13,13 +13,18 @@
         postgresql_pgpass_lines: "{{ ( postgresql_pgpass_b64encoded['content'] | b64decode ).split('\n') }}"
       # no_log: true
 
-    - name: "Read the {{ postgresql_user }} password from the file"
+    - name: "Read the {{ postgresql_user }} password line from the file"
       set_fact:
-        postgresql_password: "{{ line.split(':')[5] }}"
+        postgresql_password_line: "{{ line }}"
       when: postgresql_pgpass_line in line
       loop: "{{ postgresql_pgpass_lines }}"
       loop_control:
         loop_var: line
+      # no_log: true
+
+    - name: "Set a fact for the {{ postgresql_user }} password"
+      set_fact:
+        postgresql_password: "{{ postgresql_password_line.split(':')[5] }}"
       # no_log: true
 
     # TODO Check that the password works and if it doesn't delete the line
