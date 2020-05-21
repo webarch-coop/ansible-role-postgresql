@@ -2,6 +2,26 @@
 - name: PostgreSQL user present
   block:
 
+    - name: Getent passwd
+      getent:
+        database: passwd
+
+    - name: Set a variable for the HOME directory of the postgres user
+      set_fact:
+        postgresql_home: "{{ user.value[4] }}"
+      when: user.key == postgres
+      loop: "{{ getent_passwd | dict2items }}"
+      loop_control:
+        loop_var: user
+        label: "{{ user.key }}"
+
+    - name: Debug the postgres HOME directory
+      debug:
+        var: postgresql_home
+        verbosity: 1
+
+    - fail:
+
     - name: "PostgreSQL password for {{ postgresql_user }} present"
       shell: "pwgen -n 20 1 > /root/.postgresql.{{ postgresql_user }}.passwd"
       no_log: true

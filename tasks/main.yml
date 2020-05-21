@@ -4,8 +4,8 @@
   tags:
     - postgresql
 
-- name: Create PostgreSQL database
-  include_tasks: create_db.yml
+- name: PostgreSQL database present
+  include_tasks: db.yml
   when:
     - ( postgresql_db is defined )
     - ( postgresql_db | length > 0 )
@@ -14,8 +14,8 @@
   tags:
     - postgresql
 
-- name: Create PostgreSQL user
-  include_tasks: create_user.yml
+- name: PostgreSQL user present
+  include_tasks: user.yml
   when:
     - ( postgresql_db is defined )
     - ( postgresql_db | length > 0 )
