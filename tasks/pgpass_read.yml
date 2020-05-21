@@ -1,0 +1,36 @@
+---
+- name: Read the PostgreSQL password from the .pgpass file
+  block:
+
+    - name: "Slurp {{ postgresql_home }}/.pgpass"
+      slurp:
+        src: "{{ postgresql_home }}/.pgpass"
+      register: postgresql_pgpass_b64encoded
+      no_log: true
+
+    - name: "Set a fact for the {{ postgresql_home }}/.pgpass contents and the string we want to match"
+      set_fact:
+        postgresql_pgpass_lines: "{{ postgresql_pgpass_b64encoded['content'] | b64decode }}"
+        postgresql_pgpass_line: "{{ postgresql_host }}:{{ postgresql_port }}:{{ postgresql_db }}:{{ postgresql_user }}"
+      no_log: true
+
+    - name: "Read the {{ postgresql_user }} password from the file"
+      set_fact:
+        postgresql_password: "{{ line.split(':')[5] }}" 
+      when: postgresql_pgpass_line in line
+      loop: "{{ postgresql_pgpass_lines }}"
+      loop_control:
+        loop_var: line
+      no_log: true
+
+    - name: Debug password
+      debug:
+        var: postgresql_password
+        verbosity: 2
+
+    # TODO Check that the password works and if it doesn't delete the line
+    # and set postgresql_password back to an empty string
+
+  tags:
+    - postgresql
+...
