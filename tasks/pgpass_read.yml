@@ -13,7 +13,7 @@
 
     - name: "Set an array for the lines in the {{ postgresql_postgres_home }}/.pgpass file"
       set_fact:
-        postgresql_pgpass_line: "{{ postgresql_host }}:{{ postgresql_port }}:{{ postgresql_db }}:{{ postgresql_user }}"
+        postgresql_pgpass_line: "{{ postgresql_host | default('localhost') }}:{{ postgresql_port | default('5432') }}:{{ postgresql_db }}:{{ postgresql_user }}"
         postgresql_pgpass_lines: "{{ ( postgresql_pgpass_b64encoded['content'] | b64decode | trim ).split('\n') }}"
       no_log: true
 

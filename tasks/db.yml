@@ -1,15 +1,23 @@
 ---
-- name: Add a PostgreSQL database
-  postgresql_db:
-    name: "{{ postgresql_db }}"
-    state: present
-  become: true
-  become_user: postgres
+- name: Create a PostgreSQL database
+  block:
+
+    # https://www.postgresql.org/docs/current/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS
+    - name: Ensure that the postgresql_db variable value is sensible
+      assert:
+        that:
+          - postgresql_db is regex("^[a-z][a-z0-9_]{2,25}$")
+
+    - name: Add a PostgreSQL database
+      postgresql_db:
+        name: "{{ postgresql_db }}"
+        state: present
+      become: true
+      become_user: postgres
+
   when:
     - ( postgresql_db is defined )
     - ( postgresql_db | length > 0 )
-    - ( postgresql_user is defined )
-    - ( postgresql_user | length > 0 )
   tags:
     - postgresql
 ...

@@ -2,6 +2,13 @@
 - name: PostgreSQL user present
   block:
 
+    # https://www.postgresql.org/docs/current/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS
+    - name: Ensure that the postgresql_db and postgresql_user variables values are sensible
+      assert:
+        that:
+          - postgresql_db is regex("^[a-z][a-z0-9_]{2,25}$")
+          - postgresql_user is regex("^[a-z][a-z0-9_]{2,25}$")
+
     - name: Include tasks to set the postgresql_postgres_home variable
       include_tasks: home.yml
 
