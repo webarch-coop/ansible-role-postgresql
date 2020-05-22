@@ -2,23 +2,8 @@
 - name: PostgreSQL user present
   block:
 
-    - name: Getent passwd
-      getent:
-        database: passwd
-
-    - name: Set a variable for the HOME directory of the postgres user
-      set_fact:
-        postgresql_postgres_home: "{{ user.value[4] }}"
-      when: user.key == "postgres"
-      loop: "{{ getent_passwd | dict2items }}"
-      loop_control:
-        loop_var: user
-        label: "{{ user.key }}"
-
-    - name: Debug the postgres HOME directory
-      debug:
-        var: postgresql_postgres_home
-        verbosity: 1
+    - name: Include tasks to set the postgresql_postgres_home variable
+      include_tasks: home.yml
 
     - name: Set the postgresql_password variable to be an empty string
       set_fact:

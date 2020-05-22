@@ -2,6 +2,9 @@
 - name: Read the PostgreSQL password from the .pgpass file
   block:
 
+    - name: Include tasks to set the postgresql_postgres_home variable
+      include_tasks: home.yml
+
     - name: "Slurp {{ postgresql_postgres_home }}/.pgpass"
       slurp:
         src: "{{ postgresql_postgres_home }}/.pgpass"

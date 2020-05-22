@@ -2,6 +2,9 @@
 - name: Generate a PostgreSQL password and write it to .pgpass
   block:
 
+    - name: Include tasks to set the postgresql_postgres_home variable
+      include_tasks: home.yml
+
     - name: PostgreSQL password generated
       command: pwgen -n 20 1
       register: postgresql_pwgen

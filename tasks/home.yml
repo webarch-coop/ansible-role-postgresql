@@ -1,0 +1,25 @@
+---
+- name: PostgreSQL user HOME directory
+  block:
+
+    - name: Getent passwd
+      getent:
+        database: passwd
+
+    - name: Set a variable for the HOME directory of the postgres user
+      set_fact:
+        postgresql_postgres_home: "{{ user.value[4] }}"
+      when: user.key == "postgres"
+      loop: "{{ getent_passwd | dict2items }}"
+      loop_control:
+        loop_var: user
+        label: "{{ user.key }}"
+
+    - name: Debug the postgres HOME directory
+      debug:
+        var: postgresql_postgres_home
+        verbosity: 1
+
+  tags:
+    - postgresql
+...
