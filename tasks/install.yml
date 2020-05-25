@@ -12,7 +12,7 @@
 - name: PostgreSQL enabled
   service:
     name: postgresql
-    state: enabled
+    state: started
   tags:
     - postgresql
 ...
