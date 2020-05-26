@@ -11,7 +11,7 @@
 
 - name: PostgreSQL enabled
   service:
-    name: postgresql
+    name: "{{ postgresql_daemon }}"
     state: started
   tags:
     - postgresql
