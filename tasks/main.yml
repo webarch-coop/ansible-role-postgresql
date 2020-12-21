@@ -23,4 +23,12 @@
     - ( postgresql_user | length > 0 )
   tags:
     - postgresql
+
+- name: PostgreSQL dump crontab present
+  include_tasks: backup.yml
+  when:
+    - ( postgresql_backups is defined )
+    - ( postgresql_backups | length > 0 )
+  tags:
+    - postgresql
 ...
