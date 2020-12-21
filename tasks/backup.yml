@@ -1,47 +1,45 @@
 ---
-- name: Include tasks to get the HOME directory for the PostgreSQL user
-  include_tasks: home.yml
+- name: Tasks to create a cronjob to dump all PostgreSQL databases
+  block:
 
-- name: Backup directory present
-  file:
-    path: "{{ postgresql_backups }}"
-    state: directory
-    owner: "{{ postgresql_user }}"
-    group: "{{ postgresql_user }}"
-    mode: 0700
-  tags:
-    - postgresql
+    - name: Include tasks to get the HOME directory for the PostgreSQL user
+      include_tasks: home.yml
 
-- name: List the PostgreSQL databases
-  shell: psql -Stc "SELECT datname FROM pg_database"
-  args:
-    executable: /bin/bash
-    chdir: "{{ postgresql_postgres_home }}"
-  environment:
-    PAGER: ""
-  register: postgresql_datnames
-  become: true
-  become_user: "{{ postgresql_user }}"
-  tags:
-    - postgresql
+    - name: Backup directory present
+      file:
+        path: "{{ postgresql_backups }}"
+        state: directory
+        owner: "{{ postgresql_user }}"
+        group: "{{ postgresql_user }}"
+        mode: 0700
 
-- name: Generate an array of the database names
-  set_fact:
-    postgresql_databases: "{{ postgresql_databases | default([]) }} + [ '{{ line }}' ]"
-  when: line | length > 0
-  loop: "{{ postgresql_datnames }}"
-  loop_control:
-    loop_var: line
-  tags:
-    - postgresql
+    - name: List the PostgreSQL databases
+      shell: psql -Stc "SELECT datname FROM pg_database"
+      args:
+        executable: /bin/bash
+        chdir: "{{ postgresql_postgres_home }}"
+      environment:
+        PAGER: ""
+      register: postgresql_datnames
+      become: true
+      become_user: "{{ postgresql_user }}"
 
-- name: Crontab present
-  cron:
-    user: "{{ postgresql_user }}"
-    name: "Dump PostgreSQL databases"
-    job: "{% for d in postgresql_databases %}pg_dump {{ d }} > {{ postgresql_backups }}/{{ d }}.sql ; %{ done %}"
-    hour: "{{ postgresql_cron_hour }}"
-    minute: "{{ 59 | random }}"
+    - name: Generate an array of the database names
+      set_fact:
+        postgresql_databases: "{{ postgresql_databases | default([]) }} + [ '{{ line }}' ]"
+      when: line | length > 0
+      loop: "{{ postgresql_datnames }}"
+      loop_control:
+        loop_var: line
+
+    - name: Crontab present
+      cron:
+        user: "{{ postgresql_user }}"
+        name: "Dump PostgreSQL databases"
+        job: "{% for d in postgresql_databases %}pg_dump {{ d }} > {{ postgresql_backups }}/{{ d }}.sql ; %{ done %}"
+        hour: "{{ postgresql_cron_hour }}"
+        minute: "{{ 59 | random }}"
+
   tags:
     - postgresql
 ...

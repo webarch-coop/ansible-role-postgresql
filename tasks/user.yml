@@ -39,7 +39,7 @@
         priv: ALL
         state: present
       become: true
-      become_user: postgres
+      become_user: "{{ postgresql_user }}"
 
   when:
     - ( postgresql_db is defined )

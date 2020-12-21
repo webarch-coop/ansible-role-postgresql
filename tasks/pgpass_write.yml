@@ -23,8 +23,8 @@
         line: "{{ postgresql_pgpass_line }}:{{ postgresql_password }}"
         state: present
         create: true
-        owner: postgres
-        group: postgres
+        owner: "{{ postgresql_user }}"
+        group: "{{ postgresql_user }}"
         mode: 0600
       no_log: true
 
