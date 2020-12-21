@@ -9,8 +9,8 @@
       file:
         path: "{{ postgresql_backups }}"
         state: directory
-        owner: "{{ postgresql_user | default('postgres') }}"
-        group: "{{ postgresql_user | default('postgres') }}"
+        owner: "{{ postgresql_superuser | default('postgres') }}"
+        group: "{{ postgresql_superuser | default('postgres') }}"
         mode: 0700
 
     - name: List the PostgreSQL databases
@@ -22,7 +22,7 @@
         PAGER: ""
       register: postgresql_datnames
       become: true
-      become_user: "{{ postgresql_user | default('postgres') }}"
+      become_user: "{{ postgresql_superuser | default('postgres') }}"
 
     - name: Generate an array of the database names
       set_fact:
@@ -37,7 +37,7 @@
 
     - name: Crontab present
       cron:
-        user: "{{ postgresql_user | default('postgres') }}"
+        user: "{{ postgresql_superuser | default('postgres') }}"
         name: "Dump PostgreSQL databases"
         job: "{% for d in postgresql_databases %}pg_dump {{ d }} > {{ postgresql_backups | default('/var/backups/postgres') }}/{{ d }}.sql ; {% endfor %}"
         hour: "{{ postgresql_cron_hour | default('02') }}"

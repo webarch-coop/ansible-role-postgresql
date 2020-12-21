@@ -17,7 +17,7 @@
         postgresql_pgpass_lines: "{{ ( postgresql_pgpass_b64encoded['content'] | b64decode | trim ).split('\n') }}"
       no_log: true
 
-    - name: "Read the {{ postgresql_user | default('postgres') }} password line from the postgresql_pgpass_lines array and split it into another array and save the 5th value"
+    - name: "Read the {{ postgresql_user }} password line from the postgresql_pgpass_lines array and split it into another array and save the 5th value"
       set_fact:
         postgresql_password: "{{ line.split(':')[4] }}"
       when: postgresql_pgpass_line in line
