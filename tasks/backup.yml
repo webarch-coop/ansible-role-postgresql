@@ -28,7 +28,7 @@
       set_fact:
         postgresql_databases: "{{ postgresql_databases | default([]) }} + [ '{{ line }}' ]"
       when: line | length > 0
-      loop: "{{ postgresql_datnames }}"
+      loop: "{{ postgresql_datnames.stdout_lines }}"
       loop_control:
         loop_var: line
 
