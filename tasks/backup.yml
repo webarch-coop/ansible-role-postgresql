@@ -1,4 +1,7 @@
 ---
+- name: Include tasks to get the HOME directory for the PostgreSQL user
+  include_tasks: home.yml
+
 - name: Backup directory present
   file:
     path: "{{ postgresql_backups }}"
