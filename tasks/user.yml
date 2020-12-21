@@ -33,13 +33,13 @@
 
     - name: PostgreSQL user present
       postgresql_user:
-        name: "{{ postgresql_user }}"
+        name: "{{ postgresql_user | default('postgres') }}"
         password: "{{ postgresql_password }}"
         db: "{{ postgresql_db }}"
         priv: ALL
         state: present
       become: true
-      become_user: "{{ postgresql_user }}"
+      become_user: "{{ postgresql_user | default('postgres') }}"
 
   when:
     - ( postgresql_db is defined )

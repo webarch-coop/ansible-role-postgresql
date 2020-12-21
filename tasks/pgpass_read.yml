@@ -5,19 +5,19 @@
     - name: Include tasks to set the postgresql_postgres_home variable
       include_tasks: home.yml
 
-    - name: "Slurp {{ postgresql_postgres_home }}/.pgpass"
+    - name: "Slurp {{ postgresql_postgres_home | default('/var/backups/postgres') }}/.pgpass"
       slurp:
-        src: "{{ postgresql_postgres_home }}/.pgpass"
+        src: "{{ postgresql_postgres_home | default('/var/backups/postgres') }}/.pgpass"
       register: postgresql_pgpass_b64encoded
       no_log: true
 
-    - name: "Set an array for the lines in the {{ postgresql_postgres_home }}/.pgpass file"
+    - name: "Set an array for the lines in the {{ postgresql_postgres_home | default('/var/backups/postgres') }}/.pgpass file"
       set_fact:
         postgresql_pgpass_line: "{{ postgresql_host | default('localhost') }}:{{ postgresql_port | default('5432') }}:{{ postgresql_db }}:{{ postgresql_user }}"
         postgresql_pgpass_lines: "{{ ( postgresql_pgpass_b64encoded['content'] | b64decode | trim ).split('\n') }}"
       no_log: true
 
-    - name: "Read the {{ postgresql_user }} password line from the postgresql_pgpass_lines array and split it into another array and save the 5th value"
+    - name: "Read the {{ postgresql_user | default('postgres') }} password line from the postgresql_pgpass_lines array and split it into another array and save the 5th value"
       set_fact:
         postgresql_password: "{{ line.split(':')[4] }}"
       when: postgresql_pgpass_line in line
