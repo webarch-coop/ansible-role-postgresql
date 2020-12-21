@@ -38,6 +38,7 @@
         db: "{{ postgresql_db }}"
         priv: ALL
         state: present
+      no_log: true
       become: true
       become_user: "{{ postgresql_superuser | default('postgres') }}"
 

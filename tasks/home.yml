@@ -9,7 +9,7 @@
     - name: Set a variable for the HOME directory of the postgres user
       set_fact:
         postgresql_postgres_home: "{{ user.value[4] }}"
-      when: user.key == postgresql_superuser
+      when: user.key == postgresql_superuser | default('postgres')
       loop: "{{ getent_passwd | dict2items }}"
       loop_control:
         loop_var: user
