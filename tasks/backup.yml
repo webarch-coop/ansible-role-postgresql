@@ -36,7 +36,7 @@
       cron:
         user: "{{ postgresql_user }}"
         name: "Dump PostgreSQL databases"
-        job: "{% for d in postgresql_databases %}pg_dump {{ d }} > {{ postgresql_backups }}/{{ d }}.sql ; %{ endfor %}"
+        job: "{% for d in postgresql_databases %}pg_dump {{ d }} > {{ postgresql_backups }}/{{ d }}.sql ; {% endfor %}"
         hour: "{{ postgresql_cron_hour }}"
         minute: "{{ 59 | random }}"
 
