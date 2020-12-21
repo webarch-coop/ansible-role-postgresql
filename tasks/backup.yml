@@ -26,7 +26,7 @@
 
     - name: Generate an array of the database names
       set_fact:
-        postgresql_databases: "{{ postgresql_databases | default([]) }} + [ '{{ line }}' ]"
+        postgresql_databases: "{{ postgresql_databases | default([]) }} + [ '{{ line | trim }}' ]"
       when: line | length > 0
       loop: "{{ postgresql_datnames.stdout_lines }}"
       loop_control:
