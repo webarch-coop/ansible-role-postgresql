@@ -3,8 +3,9 @@
 This role has been designed to:
 
 * Install PostgresSQL on Debian
-* Create a database and user
-* Write the login details to the `postgres` users `$HOME/.pgpass` file
+* Optionally create a databases and users
+* Write the login details of users created to the `postgres` users `$HOME/.pgpass` file
+* Create a cronjob to dump all databases on a nightly basis
 
 In the future support for ensuring that an array or dictionary of databases and
 users are present might be added.
