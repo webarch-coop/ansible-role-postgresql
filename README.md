@@ -10,6 +10,16 @@ This role has been designed to:
 In the future support for ensuring that an array or dictionary of databases and
 users are present might be added.
 
+## Upgrading from Debian Buster to Bullseye
+
+After upgrading the OS PostgreSQL need to be upgraded:
+
+```bash
+pg_dropcluster --stop 13 main
+pg_upgradecluster 11 main
+apt remove postgresql-11 postgresql-client-11
+```
+
 ## Links
 
 * The Debian [PostgreSQL](https://wiki.debian.org/PostgreSql) wiki page
