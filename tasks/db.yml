@@ -6,7 +6,7 @@
     - name: Ensure that the postgresql_db variable value is sensible
       assert:
         that:
-          - postgresql_db is regex("^[a-z][a-z0-9_]{2,25}$")
+          - postgresql_db is regex("^[a-z][a-z0-9_]{1,25}$")
 
     - name: Add a PostgreSQL database
       postgresql_db:
