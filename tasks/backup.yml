@@ -14,9 +14,8 @@
         mode: 0700
 
     - name: List the PostgreSQL databases
-      shell: psql -Stc "SELECT datname FROM pg_database"
+      command: psql -Stc "SELECT datname FROM pg_database"
       args:
-        executable: /bin/bash
         chdir: "{{ postgresql_postgres_home | default('/var/backups/postgres') }}"
       environment:
         PAGER: ""
@@ -34,6 +33,12 @@
       loop: "{{ postgresql_datnames.stdout_lines }}"
       loop_control:
         loop_var: line
+        label: "{{ line | trim }}"
+
+    - name: Debug PostgreSQL databases
+      debug:
+        var: postgresql_databases
+        verbosity: 2
 
     - name: Crontab present
       cron:
