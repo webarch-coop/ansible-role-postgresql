@@ -16,7 +16,7 @@
     - name: List the PostgreSQL databases
       command: psql -Stc "SELECT datname FROM pg_database"
       args:
-        chdir: "{{ postgresql_postgres_home | default('/var/backups/postgres') }}"
+        chdir: "{{ postgresql_postgres_home | default('/var/lib/postgresql') }}"
       environment:
         PAGER: ""
       register: postgresql_datnames
