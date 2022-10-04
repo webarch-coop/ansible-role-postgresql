@@ -3,22 +3,23 @@
   block:
 
     - name: Include tasks to set the postgresql_postgres_home variable
-      include_tasks: home.yml
+      ansible.builtin.include_tasks: home.yml
 
     - name: PostgreSQL password generated
-      command: "pwgen -n {{ 24 | random(14) }} 1"
-      register: postgresql_pwgen
+      ansible.builtin.command: "pwgen -n {{ 24 | random(14) }} 1"
       check_mode: false
+      changed_when: false
+      register: postgresql_pwgen
       no_log: true
 
     - name: Set a fact for the PostgreSQL password
-      set_fact:
+      ansible.builtin.set_fact:
         postgresql_password: "{{ postgresql_pwgen.stdout | trim }}"
         postgresql_pgpass_line: "{{ postgresql_host | default('localhost') }}:{{ postgresql_port | default('5432') }}:{{ postgresql_db }}:{{ postgresql_user }}"
       no_log: true
 
-    - name: "Password written to {{ postgresql_postgres_home }}/.pgpass"
-      lineinfile:
+    - name: Password written to /.pgpass
+      ansible.builtin.lineinfile:
         path: "{{ postgresql_postgres_home }}/.pgpass"
         line: "{{ postgresql_pgpass_line }}:{{ postgresql_password }}"
         state: present

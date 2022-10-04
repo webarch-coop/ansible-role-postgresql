@@ -4,12 +4,12 @@
 
     # https://www.postgresql.org/docs/current/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS
     - name: Ensure that the postgresql_db variable value is sensible
-      assert:
+      ansible.builtin.assert:
         that:
           - postgresql_db is regex("^[a-z][a-z0-9_]{1,25}$")
 
     - name: Add a PostgreSQL database
-      postgresql_db:
+      community.postgresql.postgresql_db:
         name: "{{ postgresql_db }}"
         state: present
       become: true

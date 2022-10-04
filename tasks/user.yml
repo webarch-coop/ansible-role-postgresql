@@ -4,35 +4,35 @@
 
     # https://www.postgresql.org/docs/current/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS
     - name: Ensure that the postgresql_db and postgresql_user variables values are sensible
-      assert:
+      ansible.builtin.assert:
         that:
           - postgresql_db is regex("^[a-z][a-z0-9_]{1,25}$")
           - postgresql_user is regex("^[a-z][a-z0-9_]{1,25}$")
 
     - name: Include tasks to set the postgresql_postgres_home variable
-      include_tasks: home.yml
+      ansible.builtin.include_tasks: home.yml
 
     - name: Set the postgresql_password variable to be an empty string
-      set_fact:
+      ansible.builtin.set_fact:
         postgresql_password: ""
 
-    - name: "Check if {{ postgresql_postgres_home }}/.pgpass exists"
-      stat:
+    - name: Check if .pgpass exists
+      ansible.builtin.stat:
         path: "{{ postgresql_postgres_home }}/.pgpass"
       register: postgresql_postgres_home_pgpass_stat
 
     - name: Read the PostgreSQL password from the .pgpass file
-      include_tasks: pgpass_read.yml
-      when: ( postgresql_postgres_home_pgpass_stat is defined ) and ( postgresql_postgres_home_pgpass_stat.stat.exists )
+      ansible.builtin.include_tasks: pgpass_read.yml
+      when: (postgresql_postgres_home_pgpass_stat is defined) and (postgresql_postgres_home_pgpass_stat.stat.exists)
 
     - name: Generate a PostgreSQL password and write it to .pgpass
-      include_tasks: pgpass_write.yml
+      ansible.builtin.include_tasks: pgpass_write.yml
       when:
-        - ( postgresql_postgres_home_pgpass_stat is defined )
-        - ( postgresql_password is not defined ) or ( postgresql_password is defined and postgresql_password | length <= 0 )
+        - (postgresql_postgres_home_pgpass_stat is defined)
+        - (postgresql_password is not defined) or (postgresql_password is defined and postgresql_password | length <= 0)
 
     - name: PostgreSQL user present
-      postgresql_user:
+      community.postgresql.postgresql_user:
         name: "{{ postgresql_user }}"
         password: "{{ postgresql_password }}"
         db: "{{ postgresql_db }}"

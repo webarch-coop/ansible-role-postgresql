@@ -3,10 +3,10 @@
   block:
 
     - name: Include tasks to get the HOME directory for the PostgreSQL user
-      include_tasks: home.yml
+      ansible.builtin.include_tasks: home.yml
 
     - name: Backup directory present
-      file:
+      ansible.builtin.file:
         path: "{{ postgresql_backups }}"
         state: directory
         owner: "{{ postgresql_superuser | default('postgres') }}"
@@ -14,7 +14,7 @@
         mode: 0700
 
     - name: List the PostgreSQL databases, omitting blank lines and leading space
-      shell: psql -Stc "SELECT datname FROM pg_database" | grep -v "^$" | sed "s/^ //"
+      ansible.builtin.shell: psql -Stc "SELECT datname FROM pg_database" | grep -v "^$" | sed "s/^ //"
       args:
         chdir: "{{ postgresql_postgres_home | default('/var/lib/postgresql') }}"
       environment:
@@ -26,16 +26,16 @@
       become_user: "{{ postgresql_superuser | default('postgres') }}"
 
     - name: Set a fact for an array of the database names
-      set_fact:
+      ansible.builtin.set_fact:
         postgresql_databases: "{{ postgresql_datnames.stdout_lines | list }}"
 
     - name: Debug PostgreSQL databases
-      debug:
+      ansible.builtin.debug:
         var: postgresql_databases
         verbosity: 2
 
     - name: Crontab present
-      cron:
+      ansible.builtin.cron:
         user: "{{ postgresql_superuser | default('postgres') }}"
         name: "Dump PostgreSQL databases"
         job: "{% for d in postgresql_databases %}pg_dump {{ d }} > {{ postgresql_backups | default('/var/backups/postgres') }}/{{ d }}.sql ; {% endfor %}"

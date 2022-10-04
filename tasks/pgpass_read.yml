@@ -3,22 +3,22 @@
   block:
 
     - name: Include tasks to set the postgresql_postgres_home variable
-      include_tasks: home.yml
+      ansible.builtin.include_tasks: home.yml
 
-    - name: "Slurp {{ postgresql_postgres_home | default('/var/backups/postgres') }}/.pgpass"
-      slurp:
+    - name: Slurp /var/backups/postgres/.pgpass
+      ansible.builtin.slurp:
         src: "{{ postgresql_postgres_home | default('/var/backups/postgres') }}/.pgpass"
       register: postgresql_pgpass_b64encoded
       no_log: true
 
-    - name: "Set an array for the lines in the {{ postgresql_postgres_home | default('/var/backups/postgres') }}/.pgpass file"
-      set_fact:
+    - name: Set an array for the lines in /var/backups/postgres/.pgpass
+      ansible.builtin.set_fact:
         postgresql_pgpass_line: "{{ postgresql_host | default('localhost') }}:{{ postgresql_port | default('5432') }}:{{ postgresql_db }}:{{ postgresql_user }}"
         postgresql_pgpass_lines: "{{ ( postgresql_pgpass_b64encoded['content'] | b64decode | trim ).split('\n') }}"
       no_log: true
 
-    - name: "Read the {{ postgresql_user }} password line from the postgresql_pgpass_lines array and split it into another array and save the 5th value"
-      set_fact:
+    - name: Read the PostgreSQL user password line from the postgresql_pgpass_lines array and split it into another array and save the 5th value
+      ansible.builtin.set_fact:
         postgresql_password: "{{ line.split(':')[4] }}"
       when: postgresql_pgpass_line in line
       loop: "{{ postgresql_pgpass_lines }}"

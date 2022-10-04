@@ -1,6 +1,6 @@
 ---
 - name: PostgreSQL packages present
-  apt:
+  ansible.builtin.apt:
     pkg:
       - postgresql
       - pwgen
@@ -9,7 +9,7 @@
     - postgresql
 
 - name: PostgreSQL enabled
-  service:
+  ansible.builtin.service:
     name: "{{ postgresql_daemon }}"
     state: started
   tags:
