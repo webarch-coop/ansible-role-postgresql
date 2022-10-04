@@ -13,8 +13,8 @@
         group: "{{ postgresql_superuser | default('postgres') }}"
         mode: 0700
 
-    - name: List the PostgreSQL databases
-      command: psql -Stc "SELECT datname FROM pg_database"
+    - name: List the PostgreSQL databases, omitting blank lines and leading space
+      shell: psql -Stc "SELECT datname FROM pg_database" | grep -v "^$" | sed "s/^ //"
       args:
         chdir: "{{ postgresql_postgres_home | default('/var/lib/postgresql') }}"
       environment:
@@ -23,17 +23,9 @@
       become: true
       become_user: "{{ postgresql_superuser | default('postgres') }}"
 
-    - name: Generate an array of the database names
+    - name: Set a fact for an array of the database names
       set_fact:
-        postgresql_databases: "{{ postgresql_databases | default([]) }} + [ '{{ line | trim }}' ]"
-      when:
-        - ( line | length > 0 )
-        - ( line != " template0" )
-        - ( line != " template1" )
-      loop: "{{ postgresql_datnames.stdout_lines }}"
-      loop_control:
-        loop_var: line
-        label: "{{ line | trim }}"
+        postgresql_databases: "{{ postgresql_datnames.stdout_lines | list }}"
 
     - name: Debug PostgreSQL databases
       debug:
