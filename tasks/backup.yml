@@ -19,6 +19,8 @@
         chdir: "{{ postgresql_postgres_home | default('/var/lib/postgresql') }}"
       environment:
         PAGER: ""
+      check_mode: false
+      changed_when: false
       register: postgresql_datnames
       become: true
       become_user: "{{ postgresql_superuser | default('postgres') }}"
