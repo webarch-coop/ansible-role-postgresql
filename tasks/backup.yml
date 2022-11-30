@@ -9,8 +9,8 @@
       ansible.builtin.file:
         path: "{{ postgresql_backups }}"
         state: directory
-        owner: "{{ postgresql_superuser | default('postgres') }}"
-        group: "{{ postgresql_superuser | default('postgres') }}"
+        owner: "{{ postgresql_superuser }}"
+        group: "{{ postgresql_superuser }}"
         mode: 0700
 
     - name: List the PostgreSQL databases, omitting blank lines and leading space
@@ -23,7 +23,7 @@
       changed_when: false
       register: postgresql_datnames
       become: true
-      become_user: "{{ postgresql_superuser | default('postgres') }}"
+      become_user: "{{ postgresql_superuser }}"
 
     - name: Set a fact for an array of the database names
       ansible.builtin.set_fact:
@@ -36,7 +36,7 @@
 
     - name: Crontab present
       ansible.builtin.cron:
-        user: "{{ postgresql_superuser | default('postgres') }}"
+        user: "{{ postgresql_superuser }}"
         name: "Dump PostgreSQL databases"
         job: "{% for d in postgresql_databases %}pg_dump {{ d }} > {{ postgresql_backups | default('/var/backups/postgres') }}/{{ d }}.sql ; {% endfor %}"
         hour: "{{ postgresql_cron_hour | default('02') }}"

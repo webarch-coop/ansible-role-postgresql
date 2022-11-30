@@ -6,14 +6,14 @@
       ansible.builtin.getent:
         database: passwd
 
+    - name: Debug getent_passwd
+      ansible.builtin.debug:
+        var: getent_passwd
+        verbosity: 2
+
     - name: Set a variable for the HOME directory of the postgres user
       ansible.builtin.set_fact:
-        postgresql_postgres_home: "{{ user.value[4] }}"
-      when: user.key == postgresql_superuser | default('postgres')
-      loop: "{{ getent_passwd | dict2items }}"
-      loop_control:
-        loop_var: user
-        label: "{{ user.key }}"
+        postgresql_postgres_home: "{{ getent_passwd | community.general.json_query(postgresql_postgres_home_query) }}"
 
     - name: Debug the postgres HOME directory
       ansible.builtin.debug:

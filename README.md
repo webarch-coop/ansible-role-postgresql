@@ -10,6 +10,10 @@ This role has been designed to:
 In the future support for ensuring that an array or dictionary of databases and
 users are present might be added.
 
+## Defaults
+
+
+
 ## Upgrading from Debian Buster to Bullseye
 
 After upgrading the OS PostgreSQL need to be upgraded:

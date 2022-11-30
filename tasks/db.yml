@@ -13,7 +13,7 @@
         name: "{{ postgresql_db }}"
         state: present
       become: true
-      become_user: "{{ postgresql_superuser | default('postgres') }}"
+      become_user: "{{ postgresql_superuser }}"
 
   when:
     - ( postgresql_db is defined )
