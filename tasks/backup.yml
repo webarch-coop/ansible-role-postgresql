@@ -29,7 +29,7 @@
     - name: Crontab random minute file present
       ansible.builtin.lineinfile:
         path: "{{ postgresql_postgres_home }}/.cron_min"
-        line: "{{ 59 | random }}"
+        line: "{{ 59 | ansible.builtin.random }}"
         regex: '^[0-5][0-9]?$'
         create: true
         state: present
@@ -40,14 +40,14 @@
       when: not postgresql_cron_min_file.stat.exists | bool
 
     - name: Read the minute from the ~/.cron_min file
-      slurp:
+      ansible.builtin.slurp:
         src: "{{ postgresql_postgres_home }}/.cron_min"
       register: postgresql_cron_min_b64encoded
       when: postgresql_cron_min_file.stat.exists | bool
 
     - name: Set a variable for the users crontab minute
-      set_fact:
-        postgresql_cron_min: "{{ postgresql_cron_min_b64encoded['content'] | b64decode | trim }}"
+      ansible.builtin.set_fact:
+        postgresql_cron_min: "{{ postgresql_cron_min_b64encoded['content'] | ansible.builtin.b64decode | trim }}"
       when:
         - postgresql_cron_min_file.stat.exists | bool
         - postgresql_cron_min_b64encoded is defined
