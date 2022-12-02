@@ -4,14 +4,17 @@
 
     - name: Include tasks to set the postgresql_postgres_home variable
       ansible.builtin.include_tasks: home.yml
+      when: >-
+        (postgresql_postgres_home is not defined) or
+        (postgresql_postgres_home | length == 0)
 
-    - name: Slurp /var/lib/postgresql/.pgpass
+    - name: Slurp .pgpass
       ansible.builtin.slurp:
         src: "{{ postgresql_postgres_home }}/.pgpass"
       register: postgresql_pgpass_b64encoded
       no_log: true
 
-    - name: Set an array for the lines in /var/lib/postgresql/.pgpass
+    - name: Set an array for the lines in .pgpass and a variable for the line to match
       ansible.builtin.set_fact:
         postgresql_pgpass_line: "{{ postgresql_host | default('localhost') }}:{{ postgresql_port | default('5432') }}:{{ postgresql_db }}:{{ postgresql_user }}"
         postgresql_pgpass_lines: "{{ ( postgresql_pgpass_b64encoded['content'] | b64decode | trim ).split('\n') }}"
@@ -20,7 +23,7 @@
     - name: Debug postgresql_pgpass_lines
       ansible.builtin.debug:
         var: postgresql_pgpass_lines
-        verbosity: 2
+        verbosity: 3
 
     - name: Read the PostgreSQL user password line from the postgresql_pgpass_lines array and split it into another array and save the 5th value
       ansible.builtin.set_fact:

@@ -9,8 +9,21 @@
           - postgresql_db is regex("^[a-z][a-z0-9_]{1,25}$")
           - postgresql_user is regex("^[a-z][a-z0-9_]{1,25}$")
 
+    - name: PostgreSQL existing role info
+      ansible.builtin.debug:
+        msg: "{{ postgresql_info | community.general.json_query(postgresql_role_query) }}"
+        verbosity: 2
+      vars:
+        postgresql_role_query: "roles.{{ postgresql_user }}"
+      when:
+        - postgresql_info is defined
+        - postgresql_db in postgresql_info.roles.keys()
+
     - name: Include tasks to set the postgresql_postgres_home variable
       ansible.builtin.include_tasks: home.yml
+      when: >-
+        (postgresql_postgres_home is not defined) or
+        (postgresql_postgres_home | length == 0)
 
     - name: Set the postgresql_password variable to be an empty string
       ansible.builtin.set_fact:
@@ -23,20 +36,32 @@
 
     - name: Read the PostgreSQL password from the .pgpass file
       ansible.builtin.include_tasks: pgpass_read.yml
-      when: (postgresql_postgres_home_pgpass_stat is defined) and (postgresql_postgres_home_pgpass_stat.stat.exists)
+      when:
+        - postgresql_postgres_home_pgpass_stat is defined | bool
+        - postgresql_postgres_home_pgpass_stat.stat.exists | bool
 
     - name: Generate a PostgreSQL password and write it to .pgpass
       ansible.builtin.include_tasks: pgpass_write.yml
-      when:
-        - (postgresql_postgres_home_pgpass_stat is defined)
-        - (postgresql_password is not defined) or (postgresql_password is defined and postgresql_password | length <= 0)
+      when: >-
+        (postgresql_postgres_home_pgpass_stat is defined and not postgresql_postgres_home_pgpass_stat.stat.exists | bool ) or
+        (postgresql_password is not defined) or (postgresql_password is defined and postgresql_password | length == 0)
 
     - name: PostgreSQL user present
       community.postgresql.postgresql_user:
         name: "{{ postgresql_user }}"
         password: "{{ postgresql_password }}"
         db: "{{ postgresql_db }}"
-        priv: ALL
+        state: present
+      no_log: true
+      become: true
+      become_user: "{{ postgresql_superuser | default('postgres') }}"
+
+    - name: PostgreSQL privs present
+      community.postgresql.postgresql_privs:
+        type: database
+        db: "{{ postgresql_db }}"
+        role: "{{ postgresql_user }}"
+        privs: "{{ postgresql_db_privs | default('ALL') }}"
         state: present
       no_log: true
       become: true

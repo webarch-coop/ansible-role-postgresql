@@ -1,34 +1,34 @@
 ---
-- name: Install PostgreSQL
-  ansible.builtin.include_tasks: install.yml
-  tags:
-    - postgresql
+- name: Install and configure PostgreSQL
+  block:
 
-- name: PostgreSQL database present
-  ansible.builtin.include_tasks: db.yml
-  when:
-    - ( postgresql_db is defined )
-    - ( postgresql_db | length > 0 )
-    - ( postgresql_user is defined )
-    - ( postgresql_user | length > 0 )
-  tags:
-    - postgresql
+    - name: Install PostgreSQL tasks
+      ansible.builtin.include_tasks: install.yml
 
-- name: PostgreSQL user present
-  ansible.builtin.include_tasks: user.yml
-  when:
-    - ( postgresql_db is defined )
-    - ( postgresql_db | length > 0 )
-    - ( postgresql_user is defined )
-    - ( postgresql_user | length > 0 )
-  tags:
-    - postgresql
+    - name: PostgreSQL info tasks
+      ansible.builtin.include_tasks: info.yml
 
-- name: PostgreSQL dump crontab present
-  ansible.builtin.include_tasks: backup.yml
-  when:
-    - ( postgresql_backups is defined )
-    - ( postgresql_backups | length > 0 )
+    - name: PostgreSQL user and database present
+      block:
+
+        - name: PostgreSQL database tasks
+          ansible.builtin.include_tasks: db.yml
+
+        - name: PostgreSQL user tasks
+          ansible.builtin.include_tasks: user.yml
+
+      when:
+        - ( postgresql_db is defined )
+        - ( postgresql_db | length > 0 )
+        - ( postgresql_user is defined )
+        - ( postgresql_user | length > 0 )
+
+    - name: PostgreSQL backup tasks
+      ansible.builtin.include_tasks: backup.yml
+      when:
+        - ( postgresql_backups is defined )
+        - ( postgresql_backups | length > 0 )
+
   tags:
     - postgresql
 ...

@@ -1,0 +1,5 @@
+---
+postgresql_daemon: "postgresql@{{ postgresql_version }}-main"
+postgresql_postgres_home_query: "{{ postgresql_superuser }}[4]"
+postgresql_superuser: postgres
+...

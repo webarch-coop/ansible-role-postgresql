@@ -1,17 +1,19 @@
 ---
-- name: PostgreSQL packages present
-  ansible.builtin.apt:
-    pkg:
-      - postgresql
-      - pwgen
-      - python3-psycopg2
-  tags:
-    - postgresql
+- name: PostgreSQL installed
+  block:
 
-- name: PostgreSQL enabled
-  ansible.builtin.service:
-    name: "{{ postgresql_daemon }}"
-    state: started
+    - name: PostgreSQL packages present
+      ansible.builtin.apt:
+        pkg:
+          - postgresql
+          - pwgen
+          - python3-psycopg2
+
+    - name: PostgreSQL enabled
+      ansible.builtin.service:
+        name: "{{ postgresql_daemon }}"
+        state: started
+
   tags:
     - postgresql
 ...

@@ -4,6 +4,9 @@
 
     - name: Include tasks to set the postgresql_postgres_home variable
       ansible.builtin.include_tasks: home.yml
+      when: >-
+        (postgresql_postgres_home is not defined) or
+        (postgresql_postgres_home | length == 0)
 
     - name: PostgreSQL password generated
       ansible.builtin.command: "pwgen -n {{ 24 | random(14) }} 1"

@@ -1,11 +1,8 @@
 ---
-postgresql_version: 13
-# For Debian Buster
-# postgresql_version: 11
-postgresql_daemon: "postgresql@{{ postgresql_version }}-main"
+postgresql_backups: /var/backups/postgres
+postgresql_cron_hour: 02
 postgresql_host: localhost
 postgresql_port: 5432
 postgresql_superuser: postgres
-postgresql_backups: /var/backups/postgres
-postgresql_cron_hour: 02
+postgresql_version: 13
 ...

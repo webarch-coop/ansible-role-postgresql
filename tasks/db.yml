@@ -1,5 +1,5 @@
 ---
-- name: Create a PostgreSQL database
+- name: PostgreSQL database
   block:
 
     # https://www.postgresql.org/docs/current/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS
@@ -8,16 +8,41 @@
         that:
           - postgresql_db is regex("^[a-z][a-z0-9_]{1,25}$")
 
-    - name: Add a PostgreSQL database
+    - name: PostgreSQL existing database info
+      ansible.builtin.debug:
+        msg: "{{ postgresql_info | community.general.json_query(postgresql_db_query) }}"
+        verbosity: 2
+      vars:
+        postgresql_db_query: "databases.{{ postgresql_db }}"
+      when:
+        - postgresql_info is defined
+        - postgresql_db in postgresql_info.databases.keys()
+
+    - name: PostgreSQL database
       community.postgresql.postgresql_db:
         name: "{{ postgresql_db }}"
-        state: present
+        encoding: "{{ postgresql_db_encoding | default('') }}"
+        template: "{{ postgresql_db_template | default('') }}"
+        lc_collate: "{{ postgresql_db_lc_collate | default(postgresql_db_locale) | default('') }}"
+        lc_ctype: "{{ postgresql_db_lc_ctype | default(postgresql_db_locale) | default('') }}"
+        port: "{{ postgresql_port }}"
+        state: "{{ postgresql_db_state | default('present') }}"
+        login_user: "{{ postgresql_superuser }}"
+      register: postgresql_db_modified
       become: true
       become_user: "{{ postgresql_superuser }}"
 
+    - name: Debug PostgreSQL database executed commands
+      ansible.builtin.debug:
+        var: postgresql_db_modified.executed_commands
+        verbosity: 2
+      when:
+        - postgresql_db_modified.executed_commands is defined
+        - postgresql_db_modified.executed_commands != []
+
   when:
-    - ( postgresql_db is defined )
-    - ( postgresql_db | length > 0 )
+    - postgresql_db is defined
+    - postgresql_db | length > 0
   tags:
     - postgresql
 ...
