@@ -2,7 +2,7 @@
 argument_specs:
   main:
     author: Chris Croome
-    description: Ansible role to install PostgreSQL on Debian.
+    description: Ansible role to install PostgreSQL on Debian and optionally create a user and database.
     short_description: The main entry point for the PostgreSQL role.
     options:
       postgresql_backups:
@@ -62,7 +62,7 @@ argument_specs:
         description: PostgreSQL user database privileges list, comma separated.
   pgpass_read:
     author: Chris Croome
-    description: Ansible role to install PostgreSQL on Debian.
+    description: Ansible role to install PostgreSQL on Debian and optionally create a user and database.
     short_description: The read PostgreSQL user password entry point for the PostgreSQL role.
     options:
       postgresql_db:

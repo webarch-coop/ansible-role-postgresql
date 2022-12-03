@@ -1,10 +1,10 @@
 ---
 galaxy_info:
   standalone: true
-  role_name: postgres
+  role_name: postgresql
   author: Chris Croome
   namespace: chriscroome
-  description: Ansible role for installing PostgresSQL
+  description: Ansible role to install PostgreSQL on Debian and optionally create a user and database
   company: Webarchitects Co-operative
   license: GNU General Public License v3.0 (GPLv3)
   min_ansible_version: "2.10"
