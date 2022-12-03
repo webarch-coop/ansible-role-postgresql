@@ -15,61 +15,73 @@
         owner: "{{ postgresql_superuser }}"
         group: "{{ postgresql_superuser }}"
         mode: 0700
-
-    - name: Debug PostgreSQL info databases
-      ansible.builtin.debug:
-        var: postgresql_info.databases.keys()
-        verbosity: 2
-
-    - name: Stat the random minute file
-      ansible.builtin.stat:
-        path: "{{ postgresql_postgres_home }}/.cron_min"
-      register: postgresql_cron_min_file
-
-    - name: Crontab random minute file present
-      ansible.builtin.lineinfile:
-        path: "{{ postgresql_postgres_home }}/.cron_min"
-        line: "{{ 59 | ansible.builtin.random }}"
-        regex: '^[0-5][0-9]?$'
-        create: true
-        state: present
-        mode: 0600
-        owner: "{{ postgresql_superuser }}"
-        group: "{{ postgresql_superuser }}"
-      register: postgresql_cron_min_edited
-      when: not postgresql_cron_min_file.stat.exists | bool
-
-    - name: Read the minute from the ~/.cron_min file
-      ansible.builtin.slurp:
-        src: "{{ postgresql_postgres_home }}/.cron_min"
-      register: postgresql_cron_min_b64encoded
-      when: postgresql_cron_min_file.stat.exists | bool
-
-    - name: Set a variable for the users crontab minute
-      ansible.builtin.set_fact:
-        postgresql_cron_min: "{{ postgresql_cron_min_b64encoded['content'] | ansible.builtin.b64decode | trim }}"
       when:
-        - postgresql_cron_min_file.stat.exists | bool
-        - postgresql_cron_min_b64encoded is defined
+        - postgresql_backups is defined
+        - postgresql_backups | length > 0
 
-    - name: Debug crontab
-      ansible.builtin.debug:
-        msg:
-          - "user: {{ postgresql_superuser }}"
-          - "name: Dump PostgreSQL databases"
-          - "job: {% for d in postgresql_info.databases.keys() %}pg_dump {{ d }} > {{ postgresql_backups | default('/var/backups/postgres') }}/{{ d }}.sql{% if not loop.last %} ; {% endif %}{% endfor %}"
-          - "hour: {{ postgresql_cron_hour | default('02') }}"
-          - "minute: {{ postgresql_cron_min | default('UNDEFINED') }}"
-        verbosity: 2
+    - name: Backup PostgreSQL cron job
+      block:
 
-    - name: Crontab present
-      ansible.builtin.cron:
-        user: "{{ postgresql_superuser }}"
-        name: "Dump PostgreSQL databases"
-        job: "{% for d in postgresql_info.databases.keys() %}pg_dump {{ d }} > {{ postgresql_backups | default('/var/backups/postgres') }}/{{ d }}.sql{% if not loop.last %} ; {% endif %}{% endfor %}"
-        hour: "{{ postgresql_cron_hour | default('02') }}"
-        minute: "{{ postgresql_cron_min }}"
-      when: postgresql_cron_min is defined
+        - name: Debug PostgreSQL info databases
+          ansible.builtin.debug:
+            var: postgresql_info.databases.keys()
+            verbosity: 2
+
+        - name: Stat the random minute file
+          ansible.builtin.stat:
+            path: "{{ postgresql_postgres_home }}/.cron_min"
+          register: postgresql_cron_min_file
+
+        - name: Crontab random minute file present
+          ansible.builtin.lineinfile:
+            path: "{{ postgresql_postgres_home }}/.cron_min"
+            line: "{{ 59 | ansible.builtin.random }}"
+            regex: '^[0-5][0-9]?$'
+            create: true
+            state: present
+            mode: 0600
+            owner: "{{ postgresql_superuser }}"
+            group: "{{ postgresql_superuser }}"
+          register: postgresql_cron_min_edited
+          when: not postgresql_cron_min_file.stat.exists | bool
+
+        - name: Read the minute from the ~/.cron_min file
+          ansible.builtin.slurp:
+            src: "{{ postgresql_postgres_home }}/.cron_min"
+          register: postgresql_cron_min_b64encoded
+          when: postgresql_cron_min_file.stat.exists | bool
+
+        - name: Set a variable for the users crontab minute
+          ansible.builtin.set_fact:
+            postgresql_cron_min: "{{ postgresql_cron_min_b64encoded['content'] | ansible.builtin.b64decode | trim }}"
+          when:
+            - postgresql_cron_min_file.stat.exists | bool
+            - postgresql_cron_min_b64encoded is defined
+
+        - name: Debug crontab
+          ansible.builtin.debug:
+            msg:
+              - "user: {{ postgresql_superuser }}"
+              - "name: Dump PostgreSQL databases"
+              - "job: {% for d in postgresql_info.databases.keys() %}pg_dump {{ d }} > {{ postgresql_backups | default('/var/backups/postgres') }}/{{ d }}.sql{% if not loop.last %} ; {% endif %}{% endfor %}"
+              - "hour: {{ postgresql_cron_hour | default('02') }}"
+              - "minute: {{ postgresql_cron_min | default('UNDEFINED') }}"
+            verbosity: 2
+
+        - name: Crontab present
+          ansible.builtin.cron:
+            user: "{{ postgresql_superuser }}"
+            name: "Dump PostgreSQL databases"
+            job: "{% for d in postgresql_info.databases.keys() %}pg_dump {{ d }} > {{ postgresql_backups | default('/var/backups/postgres') }}/{{ d }}.sql{% if not loop.last %} ; {% endif %}{% endfor %}"
+            hour: "{{ postgresql_cron_hour | default('02') }}"
+            minute: "{{ postgresql_cron_min }}"
+          when: postgresql_cron_min is defined
+
+      when:
+        - postgresql_backups is defined
+        - postgresql_backups | length > 0
+        - postgresql_cron_hour is defined
+        - postgresql_cron_hour | length > 0
 
   tags:
     - postgresql

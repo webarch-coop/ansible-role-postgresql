@@ -23,8 +23,8 @@
     - name: Include tasks to set the postgresql_postgres_home variable
       ansible.builtin.include_tasks: home.yml
       when: >-
-        (postgresql_postgres_home is not defined) or
-        (postgresql_postgres_home | length == 0)
+        ( postgresql_postgres_home is not defined ) or
+        ( postgresql_postgres_home | length == 0 )
 
     - name: Set the postgresql_password variable to be an empty string
       ansible.builtin.set_fact:
@@ -44,8 +44,8 @@
     - name: Generate a PostgreSQL password and write it to .pgpass
       ansible.builtin.include_tasks: pgpass_write.yml
       when: >-
-        (postgresql_postgres_home_pgpass_stat is defined and not postgresql_postgres_home_pgpass_stat.stat.exists | bool ) or
-        (postgresql_password is not defined) or (postgresql_password is defined and postgresql_password | length == 0)
+        ( postgresql_postgres_home_pgpass_stat is defined and not postgresql_postgres_home_pgpass_stat.stat.exists | bool ) or
+        ( postgresql_password is not defined ) or ( postgresql_password is defined and postgresql_password | length == 0 )
 
     - name: PostgreSQL user present
       community.postgresql.postgresql_user:
@@ -53,26 +53,26 @@
         password: "{{ postgresql_password }}"
         db: "{{ postgresql_db }}"
         state: present
-      no_log: true
+      no_log: "{% if ansible_verbosity < 2 %}true{% else %}false{% endif %}"
       become: true
-      become_user: "{{ postgresql_superuser | default('postgres') }}"
+      become_user: "{{ postgresql_superuser }}"
 
     - name: PostgreSQL privs present
       community.postgresql.postgresql_privs:
         type: database
         db: "{{ postgresql_db }}"
         role: "{{ postgresql_user }}"
-        privs: "{{ postgresql_db_privs | default('ALL') }}"
+        privs: "{{ postgresql_user_privs | default('ALL') }}"
         state: present
-      no_log: true
+      no_log: "{% if ansible_verbosity < 2 %}true{% else %}false{% endif %}"
       become: true
-      become_user: "{{ postgresql_superuser | default('postgres') }}"
+      become_user: "{{ postgresql_superuser }}"
 
   when:
-    - ( postgresql_db is defined )
-    - ( postgresql_db | length > 0 )
-    - ( postgresql_user is defined )
-    - ( postgresql_user | length > 0 )
+    - postgresql_db is defined
+    - postgresql_db | length > 0
+    - postgresql_user is defined
+    - postgresql_user | length > 0
   tags:
     - postgresql
 ...

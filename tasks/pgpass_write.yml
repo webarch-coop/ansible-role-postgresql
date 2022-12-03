@@ -5,21 +5,21 @@
     - name: Include tasks to set the postgresql_postgres_home variable
       ansible.builtin.include_tasks: home.yml
       when: >-
-        (postgresql_postgres_home is not defined) or
-        (postgresql_postgres_home | length == 0)
+        ( postgresql_postgres_home is not defined ) or
+        ( postgresql_postgres_home | length == 0 )
 
     - name: PostgreSQL password generated
       ansible.builtin.command: "pwgen -n {{ 24 | random(14) }} 1"
       check_mode: false
       changed_when: false
       register: postgresql_pwgen
-      no_log: true
+      no_log: "{% if ansible_verbosity < 2 %}true{% else %}false{% endif %}"
 
     - name: Set a fact for the PostgreSQL password
       ansible.builtin.set_fact:
         postgresql_password: "{{ postgresql_pwgen.stdout | trim }}"
-        postgresql_pgpass_line: "{{ postgresql_host | default('localhost') }}:{{ postgresql_port | default('5432') }}:{{ postgresql_db }}:{{ postgresql_user }}"
-      no_log: true
+        postgresql_pgpass_line: "{{ postgresql_host }}:{{ postgresql_port }}:{{ postgresql_db }}:{{ postgresql_user }}"
+      no_log: "{% if ansible_verbosity < 2 %}true{% else %}false{% endif %}"
 
     - name: Password written to /.pgpass
       ansible.builtin.lineinfile:
@@ -27,10 +27,10 @@
         line: "{{ postgresql_pgpass_line }}:{{ postgresql_password }}"
         state: present
         create: true
-        owner: "{{ postgresql_superuser | default('postgres') }}"
-        group: "{{ postgresql_superuser | default('postgres') }}"
+        owner: "{{ postgresql_superuser }}"
+        group: "{{ postgresql_superuser }}"
         mode: 0600
-      no_log: true
+      no_log: "{% if ansible_verbosity < 2 %}true{% else %}false{% endif %}"
 
   tags:
     - postgresql

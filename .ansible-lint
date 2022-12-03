@@ -1,11 +1,8 @@
 ---
-# https://docs.ansible.com/ansible-lint/rules/default_rules.html
+# https://ansible-lint.readthedocs.io/rules/
 skip_list:
   - key-order[task]
   - schema[meta]
-  # Lines should be no longer than 160 chars
-  - "204"
-  # Use shell only when shell functionality is required
-  - "305"
+  - schema[tasks]
 # vim: syntax=yaml
 ...

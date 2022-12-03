@@ -2,24 +2,49 @@
 - name: PostgreSQL info
   block:
 
-    - name: PostgreSQL info
-      community.postgresql.postgresql_info:
-        login_user: "{{ postgresql_superuser }}"
-        port: "{{ postgresql_port }}"
-        filter:
-          - databases
-          - roles
-          - settings
-          - tablespaces
-          - version
-      register: postgresql_info
-      become: true
-      become_user: "{{ postgresql_superuser }}"
+    - name: Stat /usr/bin/pg_lsclusters
+      ansible.builtin.stat:
+        path: /usr/bin/pg_lsclusters
+      register: postgresql_ps_lsclusters_check
 
-    - name: Debug PostgreSQL info
-      ansible.builtin.debug:
-        var: postgresql_info
-        verbosity: 3
+    - name: Gather PostgreSQL info when pg_lsclusters is present
+      block:
+
+        - name: Run pg_lsclusters -j
+          ansible.builtin.command: pg_lsclusters -j
+          changed_when: false
+          check_mode: false
+          register: postgresql_ps_lsclusters
+
+        - name: Set a fact for the results of pg_lsclusters -j
+          ansible.builtin.set_fact:
+            postgresql_lsclusters: "{{ postgresql_ps_lsclusters.stdout }}"
+
+        - name: Debug postgresql_ps_lsclusters
+          ansible.builtin.debug:
+            var: postgresql_lsclusters
+            verbosity: 2
+
+        - name: PostgreSQL info
+          community.postgresql.postgresql_info:
+            login_user: "{{ postgresql_superuser }}"
+            port: "{{ postgresql_port }}"
+            filter:
+              - databases
+              - roles
+              - settings
+              - tablespaces
+              - version
+          register: postgresql_info
+          become: true
+          become_user: "{{ postgresql_superuser }}"
+
+        - name: Debug PostgreSQL info
+          ansible.builtin.debug:
+            var: postgresql_info
+            verbosity: 3
+
+      when: postgresql_ps_lsclusters_check.stat.exists | bool
 
   tags:
     - postgresql

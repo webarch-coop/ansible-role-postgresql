@@ -1,8 +1,20 @@
 ---
 postgresql_backups: /var/backups/postgres
-postgresql_cron_hour: 02
+postgresql_cron_hour: 2
+# postgresql_db:
+# postgresql_db_encoding:
+# postgresql_db_lc_collate:
+# postgresql_db_lc_ctype:
+# postgresql_db_locale:
+# postgresql_db_state: present
 postgresql_host: localhost
+postgresql_pkgs:
+  - libjson-perl
+  - postgresql
+  - pwgen
+  - python3-psycopg2
 postgresql_port: 5432
 postgresql_superuser: postgres
-postgresql_version: 13
+# postgresql_user:
+# postgresql_user_privs: ALL
 ...

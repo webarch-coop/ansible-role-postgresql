@@ -4,15 +4,29 @@
 
     - name: PostgreSQL packages present
       ansible.builtin.apt:
-        pkg:
-          - postgresql
-          - pwgen
-          - python3-psycopg2
+        pkg: "{{ postgresql_pkgs }}"
+      register: postgresql_pkgs_present
+
+    - name: Include PostgreSQL info tasks
+      ansible.builtin.include_tasks: info.yml
+      when: postgresql_pkgs_present.changed | bool
+
+    - name: Stat /lib/systemd/system/postgresql.service
+      ansible.builtin.stat:
+        path: /lib/systemd/system/postgresql.service
+      register: postgresql_system_service
 
     - name: PostgreSQL enabled
       ansible.builtin.service:
-        name: "{{ postgresql_daemon }}"
+        name: postgresql
         state: started
+      register: postgresql_service
+      when: postgresql_system_service.stat.exists | bool
+
+    - name: Debug postgresql_service
+      ansible.builtin.debug:
+        var: postgresql_service
+        verbosity: 2
 
   tags:
     - postgresql

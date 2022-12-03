@@ -2,7 +2,7 @@
 - name: Install and configure PostgreSQL
   block:
 
-    - name: Install PostgreSQL tasks
+    - name: PostgreSQL install tasks
       ansible.builtin.include_tasks: install.yml
 
     - name: PostgreSQL info tasks
@@ -11,23 +11,30 @@
     - name: PostgreSQL user and database present
       block:
 
-        - name: PostgreSQL database tasks
-          ansible.builtin.include_tasks: db.yml
+        - name: PostgreSQL user and database present
+          block:
 
-        - name: PostgreSQL user tasks
-          ansible.builtin.include_tasks: user.yml
+            - name: PostgreSQL database tasks
+              ansible.builtin.include_tasks: db.yml
 
-      when:
-        - ( postgresql_db is defined )
-        - ( postgresql_db | length > 0 )
-        - ( postgresql_user is defined )
-        - ( postgresql_user | length > 0 )
+            - name: PostgreSQL user tasks
+              ansible.builtin.include_tasks: user.yml
 
-    - name: PostgreSQL backup tasks
-      ansible.builtin.include_tasks: backup.yml
-      when:
-        - ( postgresql_backups is defined )
-        - ( postgresql_backups | length > 0 )
+          when:
+            - postgresql_db is defined
+            - postgresql_db | length > 0
+            - postgresql_user is defined
+            - postgresql_user | length > 0
+
+        - name: PostgreSQL backup tasks
+          ansible.builtin.include_tasks: backup.yml
+          when:
+            - postgresql_backups is defined
+            - postgresql_backups | length > 0
+
+      when: >-
+        ( postgresql_service.skipped is not defined ) or
+        ( not postgresql_service.skipped | bool )
 
   tags:
     - postgresql

@@ -41,6 +41,10 @@
         - postgresql_db_modified.executed_commands is defined
         - postgresql_db_modified.executed_commands != []
 
+    - name: Include PostgreSQL info tasks
+      ansible.builtin.include_tasks: info.yml
+      when: postgresql_db_modified.changed | bool
+
   when:
     - postgresql_db is defined
     - postgresql_db | length > 0

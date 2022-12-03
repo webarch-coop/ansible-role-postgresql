@@ -1,0 +1,76 @@
+---
+argument_specs:
+  main:
+    author: Chris Croome
+    description: Ansible role to install PostgreSQL on Debian.
+    short_description: The main entry point for the PostgreSQL role.
+    options:
+      postgresql_backups:
+        type: str
+        required: false
+        description: Directory for PostgreSQL backups.
+      postgresql_cron_hour:
+        type: str
+        required: false
+        description: Hour for PostgreSQL backup creation.
+      postgresql_db:
+        type: str
+        required: false
+        description: PostgreSQL database name.
+      postgresql_db_encoding:
+        type: str
+        required: false
+        description: PostgreSQL database encoding.
+      postgresql_db_lc_collate:
+        type: str
+        required: false
+        description: PostgreSQL database collation order (LC_COLLATE).
+      postgresql_db_lc_ctype:
+        type: str
+        required: false
+        description: PostgreSQL database character classification (LC_CTYPE).
+      postgresql_db_locale:
+        type: str
+        required: false
+        description: PostgreSQL database locale.
+      postgresql_db_state:
+        type: str
+        required: false
+        description: PostgreSQL database state.
+        choices:
+          - absent
+          - present
+      postgresql_host:
+        type: str
+        required: true
+        description: PostgreSQL host.
+      postgresql_port:
+        type: int
+        required: true
+        description: PostgreSQL port number.
+      postgresql_superuser:
+        type: str
+        required: true
+        description: PostgreSQL superuser.
+      postgresql_user:
+        type: str
+        required: false
+        description: PostgreSQL user name.
+      postgresql_user_privs:
+        type: str
+        required: false
+        description: PostgreSQL user database privileges list, comma separated.
+  pgpass_read:
+    author: Chris Croome
+    description: Ansible role to install PostgreSQL on Debian.
+    short_description: The read PostgreSQL user password entry point for the PostgreSQL role.
+    options:
+      postgresql_db:
+        type: str
+        required: true
+        description: The PostgreSQL database name.
+      postgresql_user:
+        type: str
+        required: true
+        description: The PostgreSQL user name.
+...
