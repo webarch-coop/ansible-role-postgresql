@@ -8,6 +8,7 @@
         that:
           - postgresql_db is regex("^[a-z][a-z0-9_]{1,25}$")
           - postgresql_user is regex("^[a-z][a-z0-9_]{1,25}$")
+        quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
 
     - name: PostgreSQL existing role info
       ansible.builtin.debug:
