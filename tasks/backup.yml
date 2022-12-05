@@ -81,7 +81,6 @@
         - postgresql_backups is defined
         - postgresql_backups | length > 0
         - postgresql_cron_hour is defined
-        - postgresql_cron_hour | length > 0
 
   tags:
     - postgresql
