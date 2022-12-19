@@ -13,6 +13,10 @@ To create multiple users and databases include this role once for each users / d
 
 This role can be included using the tasks from the [tasks/pgpass_read.yml](tasks/pgpass_read.yml) file in order to read a users password.
 
+## Requirements
+
+This role requires [JC](https://github.com/kellyjonbrazil/jc) version [1.22.3](https://github.com/kellyjonbrazil/jc/releases/tag/v1.22.3) to be installed on the Ansible controller as the [PostgreSQL password file parser](https://kellyjonbrazil.github.io/jc/docs/parsers/pgpass) is used to read passwords from `/var/lib/postgresql/.pgpass`.
+
 ## Defaults
 
 See the [defaults/main.yml](defaults/main.yml) file and the [meta/argument_specs.yml](meta/argument_specs.yml) file.
@@ -100,4 +104,3 @@ This role is released under [the same terms as Ansible itself](https://github.co
 
 * The Debian [PostgreSQL](https://wiki.debian.org/PostgreSql) wiki page.
 * The Ansible [community.postgresql modules](https://docs.ansible.com/ansible/latest/collections/community/postgresql/index.html).
-
