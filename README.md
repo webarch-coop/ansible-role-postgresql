@@ -104,3 +104,4 @@ This role is released under [the same terms as Ansible itself](https://github.co
 
 * The Debian [PostgreSQL](https://wiki.debian.org/PostgreSql) wiki page.
 * The Ansible [community.postgresql modules](https://docs.ansible.com/ansible/latest/collections/community/postgresql/index.html).
+* The JC [pgpass parser](https://kellyjonbrazil.github.io/jc/docs/parsers/pgpass)
