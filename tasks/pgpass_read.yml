@@ -14,28 +14,33 @@
       register: postgresql_pgpass_b64encoded
       no_log: "{% if ansible_verbosity < 2 %}true{% else %}false{% endif %}"
 
-    - name: Set an array for the lines in .pgpass and a variable for the line to match
+    - name: Set a fact for the records in .pgpass using the jc pgpass filter
       ansible.builtin.set_fact:
-        postgresql_pgpass_line: "{{ postgresql_host }}:{{ postgresql_port }}:{{ postgresql_db }}:{{ postgresql_user }}"
-        postgresql_pgpass_lines: "{{ ( postgresql_pgpass_b64encoded['content'] | b64decode | trim ).split('\n') }}"
+        postgresql_pgpass: "{{ postgresql_pgpass_b64encoded['content'] | ansible.builtin.b64decode | trim | community.general.jc('pgpass') }}"
       no_log: "{% if ansible_verbosity < 2 %}true{% else %}false{% endif %}"
 
-    - name: Debug postgresql_pgpass_lines
+    - name: Debug postgresql_pgpass
       ansible.builtin.debug:
-        var: postgresql_pgpass_lines
+        var: postgresql_pgpass
         verbosity: 3
 
-    - name: Read the PostgreSQL user password line from the postgresql_pgpass_lines array and split it into another array saving the 5th value
+    - name: Set a fact for the PostgreSQL user password
       ansible.builtin.set_fact:
-        postgresql_password: "{{ line.split(':')[4] }}"
-      when: postgresql_pgpass_line in line
-      loop: "{{ postgresql_pgpass_lines }}"
-      loop_control:
-        loop_var: line
-      no_log: "{% if ansible_verbosity < 2 %}true{% else %}false{% endif %}"
+        postgresql_password: "{{ postgresql_pgpass | community.general.json_query(postgresql_password_jmespath_query) }}"
+      vars:
+        postgresql_password_jmespath_query: "[?hostname == '{{ postgresql_host }}'] | [?port == '{{ postgresql_port }}'] | [?database == '{{ postgresql_db }}'] | [?username == '{{ postgresql_user }}'].password | [0]"
 
-    # TODO Check that the password works and if it doesn't delete the line
-    # and set postgresql_password back to an empty string
+    - name: Test the PostgreSQL user password
+      community.postgresql.postgresql_user_obj_stat_info:
+        db: "{{ postgresql_db }}"
+        login_host: "{{ postgresql_host }}"
+        login_password: "{{ postgresql_password }}"
+        login_user: "{{ postgresql_user }}"
+        port: "{{ postgresql_port }}"
+        filter: invocation
+
+    # TODO If the password check above fails delete the line and set
+    # postgresql_password back to an empty string
 
   tags:
     - postgresql
