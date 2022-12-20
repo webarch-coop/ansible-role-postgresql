@@ -37,7 +37,12 @@
         login_password: "{{ postgresql_password }}"
         login_user: "{{ postgresql_user }}"
         port: "{{ postgresql_port }}"
-        filter: invocation
+      register: postgresql_user_obj_stat_info
+
+    - name: Debug PostgreSQL user password test
+      ansible.builtin.debug:
+        var: postgresql_user_obj_stat_info
+        verbosity: 3
 
     # TODO If the password check above fails delete the line and set
     # postgresql_password back to an empty string
