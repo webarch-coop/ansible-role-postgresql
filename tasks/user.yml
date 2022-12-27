@@ -83,6 +83,9 @@
       no_log: "{% if ansible_verbosity < 2 %}true{% else %}false{% endif %}"
       become: true
       become_user: "{{ postgresql_superuser }}"
+      when:
+        - postgresql_info.databases.['postgresql_db'] is defined
+        - postgresql_info.roles.['postgresql_user'] is defined
 
   when:
     - postgresql_db is defined
