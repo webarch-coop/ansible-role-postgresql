@@ -87,7 +87,7 @@
         postgresql_db_check: "{{ ansible_local['postgresql_info.databases.' ~ postgresql_db] }}"
         postgresql_user_check: "{{ ansible_local['postgresql_info.roles.' ~ postgresql_user] }}"
       when:
-        - postgresql_db_check is defined 
+        - postgresql_db_check is defined
         - postgresql_user_check is defined
 
   when:
