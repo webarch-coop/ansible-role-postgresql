@@ -57,6 +57,22 @@
       become: true
       become_user: "{{ postgresql_superuser }}"
 
+    - name: PostgreSQL info
+      community.postgresql.postgresql_info:
+        login_user: "{{ postgresql_superuser }}"
+        port: "{{ postgresql_port }}"
+        filter:
+          - databases
+          - roles
+      register: postgresql_info
+      become: true
+      become_user: "{{ postgresql_superuser }}"
+
+    - name: Debug PostgreSQL info
+      ansible.builtin.debug:
+        var: postgresql_info
+        verbosity: 3
+
     - name: PostgreSQL privs present
       community.postgresql.postgresql_privs:
         type: database
