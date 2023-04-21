@@ -67,6 +67,8 @@
             - postgresql_cron_min_file.stat.exists | bool
             - postgresql_cron_min_b64encoded is defined
 
+        # TODO This should create one cronjob per database not one for all of them
+
         - name: Debug crontab
           ansible.builtin.debug:
             msg:
