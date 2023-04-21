@@ -68,8 +68,6 @@
             var: postgresql_user_info
             verbosity: 3
 
-        - fail:
-
       when: postgresql_ps_lsclusters_check.stat.exists | bool
 
   tags:
