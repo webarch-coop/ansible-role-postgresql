@@ -11,6 +11,10 @@
 - name: Read the PostgreSQL password from the .pgpass file
   block:
 
+    - name: Include the PostgreSQL info tasks
+      ansible.builtin.include_tasks: info.yml
+      when: postgresql_info is not defined
+
     - name: Include tasks to set the postgresql_postgres_home variable
       ansible.builtin.include_tasks: home.yml
       when: >-
@@ -39,29 +43,30 @@
       vars:
         postgresql_password_jmespath_query: "[?hostname == '{{ postgresql_host }}'] | [?port == '{{ postgresql_port }}'] | [?database == '{{ postgresql_db }}'] | [?username == '{{ postgresql_user }}'].password | [0]"
 
-    - name: Test the password when found
-      block:
-
-        - name: Test the PostgreSQL user password
-          community.postgresql.postgresql_user_obj_stat_info:
-            db: "{{ postgresql_db }}"
-            login_host: "{{ postgresql_host }}"
-            login_password: "{{ postgresql_password }}"
-            login_user: "{{ postgresql_user }}"
-            port: "{{ postgresql_port }}"
-          register: postgresql_user_obj_stat_info
-
-        - name: Debug PostgreSQL user password test
-          ansible.builtin.debug:
-            var: postgresql_user_obj_stat_info
-            verbosity: 3
-
-        # TODO If the password check above fails delete the line and set
-        # postgresql_password back to an empty string
-
-      when:
-        - postgresql_password is defined
-        - postgresql_password | length > 0
+# TODO this should only run whe the user exists!
+#    - name: Test the password when found
+#      block:
+#
+#        - name: Test the PostgreSQL user password
+#          community.postgresql.postgresql_user_obj_stat_info:
+#            db: "{{ postgresql_db }}"
+#            login_host: "{{ postgresql_host }}"
+#            login_password: "{{ postgresql_password }}"
+#            login_user: "{{ postgresql_user }}"
+#            port: "{{ postgresql_port }}"
+#          register: postgresql_user_obj_stat_info
+#
+#        - name: Debug PostgreSQL user password test
+#          ansible.builtin.debug:
+#            var: postgresql_user_obj_stat_info
+#            verbosity: 3
+#
+#        # TODO If the password check above fails delete the line and set
+#        # postgresql_password back to an empty string
+#
+#      when:
+#        - postgresql_password is defined
+#        - postgresql_password | length > 0
 
   tags:
     - postgresql

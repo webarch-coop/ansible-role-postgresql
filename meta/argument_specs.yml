@@ -9,6 +9,15 @@
 # You should have received a copy of the GNU General Public License along with the Webarchitects PostgreSQL Ansible role. If not, see <https://www.gnu.org/licenses/>.
 ---
 argument_specs:
+  db:
+    author: Chris Croome
+    description: Ansible role to install PostgreSQL on Debian and optionally create a user and database.
+    short_description: The db PostgreSQL entry point for the PostgreSQL role.
+    options:
+      postgresql_db:
+        type: str
+        required: true
+        description: PostgreSQL database name.
   main:
     author: Chris Croome
     description: Ansible role to install PostgreSQL on Debian and optionally create a user and database.
@@ -99,4 +108,21 @@ argument_specs:
         type: str
         required: true
         description: The PostgreSQL user name.
+  user:
+    author: Chris Croome
+    description: Ansible role to install PostgreSQL on Debian and optionally create a user and database.
+    short_description: The user PostgreSQL entry point for the PostgreSQL role.
+    options:
+      postgresql_db:
+        type: str
+        required: true
+        description: PostgreSQL database name.
+      postgresql_user:
+        type: str
+        required: true
+        description: PostgreSQL user name.
+      postgresql_user_privs:
+        type: str
+        required: false
+        description: PostgreSQL user database privileges list, comma separated.
 ...

@@ -19,6 +19,10 @@
           - postgresql_user is regex("^[a-z][a-z0-9_]{1,25}$")
         quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
 
+    - name: Include the PostgreSQL info tasks
+      ansible.builtin.include_tasks: info.yml
+      when: postgresql_info is not defined
+
     - name: PostgreSQL existing role info
       ansible.builtin.debug:
         msg: "{{ postgresql_info | community.general.json_query(postgresql_role_query) }}"

@@ -41,8 +41,6 @@
             filter:
               - databases
               - roles
-              - settings
-              - tablespaces
               - version
           register: postgresql_info
           become: true
@@ -52,6 +50,25 @@
           ansible.builtin.debug:
             var: postgresql_info
             verbosity: 3
+
+        - name: PostgreSQL user info
+          community.postgresql.postgresql_user_obj_stat_info:
+            db: "{{ postgresql_db }}"
+            login_user: "{{ postgresql_superuser }}"
+          register: postgresql_user_info
+          become: true
+          become_user: "{{ postgresql_superuser }}"
+          when:
+            - postgresql_db is defined
+            - postgresql_db | length > 0
+            - postgresql_db in postgresql_info.databases.keys()
+
+        - name: Debug PostgreSQL user info
+          ansible.builtin.debug:
+            var: postgresql_user_info
+            verbosity: 3
+
+        - fail:
 
       when: postgresql_ps_lsclusters_check.stat.exists | bool
 
