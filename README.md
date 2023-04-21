@@ -21,6 +21,10 @@ This role requires [JC](https://github.com/kellyjonbrazil/jc) version [1.22.3](h
 
 See the [defaults/main.yml](defaults/main.yml) file and the [meta/argument_specs.yml](meta/argument_specs.yml) file.
 
+### postgresql
+
+A boolean that defaults to `false`, set `postgresql` to `true` for the tasks in this role to be run.
+
 ### postgresql_backups
 
 The path for the nightly database backups to be written to, `postgresql_backups` defaults to `/var/backups/postgres`.
@@ -29,7 +33,7 @@ If this variable is empty then the database backups cron job will not be created
 
 ### postgresql_cron_hour
 
-The hour during which the database backups will be created, the minute is set randomly and saved and read from the PostgreSQL superuser `$HOME/.cron_min` file. 
+The hour during which the database backups will be created, the minute is set randomly and saved and read from the PostgreSQL superuser `$HOME/.cron_min` file.
 
 If `postgresql_cron_hour` is empty then the cron job will not be created.
 
@@ -81,6 +85,10 @@ The name of a PostgreSQL user acocunt to create, `postgresql_user` is not define
 
 The database privileges that the `postgresql_user` should have on the `postgresql_db`, if this variable is not set then `ALL` will be used when adding a database and user.
 
+### postgresql_validate
+
+A boolean, validate variabels that start with `postgresql_` using the [meta/argument_specs.yml](meta/argument_specs.yml) file.
+
 ## Upgrading Debian versions
 
 After upgrading Debian PostgreSQL need to be upgraded, for example when going from Buster to Bullseye:
@@ -91,7 +99,13 @@ pg_upgradecluster 11 main
 apt remove postgresql-11 postgresql-client-11
 ```
 
-## Repository 
+## References
+
+* The Debian [PostgreSQL](https://wiki.debian.org/PostgreSql) wiki page.
+* The Ansible [community.postgresql modules](https://docs.ansible.com/ansible/latest/collections/community/postgresql/index.html).
+* The JC [pgpass parser](https://kellyjonbrazil.github.io/jc/docs/parsers/pgpass)
+
+## Repository
 
 The primary URL of this repo is [`https://git.coop/webarch/postgresql`](https://git.coop/webarch/postgresql) however it is also [mirrored to GitHub](https://github.com/webarch-coop/ansible-role-postgresql) and [available via Ansible Galaxy](https://galaxy.ansible.com/chriscroome/postgresql).
 If you use this role please use a tagged release, see [the release notes](https://git.coop/webarch/postgresql/-/releases).
@@ -99,9 +113,3 @@ If you use this role please use a tagged release, see [the release notes](https:
 ## License
 
 This role is released under [the same terms as Ansible itself](https://github.com/ansible/ansible/blob/devel/COPYING), the [GNU GPLv3](LICENSE).
-
-## References
-
-* The Debian [PostgreSQL](https://wiki.debian.org/PostgreSql) wiki page.
-* The Ansible [community.postgresql modules](https://docs.ansible.com/ansible/latest/collections/community/postgresql/index.html).
-* The JC [pgpass parser](https://kellyjonbrazil.github.io/jc/docs/parsers/pgpass)

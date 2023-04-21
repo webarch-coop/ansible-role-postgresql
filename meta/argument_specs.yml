@@ -1,3 +1,12 @@
+# Copyright 2020-2023 Chris Croome
+#
+# This file is part of the Webarchitects PostgreSQL Ansible role.
+#
+# The Webarchitects PostgreSQL Ansible role is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+#
+# The Webarchitects PostgreSQL Ansible role is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with the Webarchitects PostgreSQL Ansible role. If not, see <https://www.gnu.org/licenses/>.
 ---
 argument_specs:
   main:
@@ -5,6 +14,10 @@ argument_specs:
     description: Ansible role to install PostgreSQL on Debian and optionally create a user and database.
     short_description: The main entry point for the PostgreSQL role.
     options:
+      postgresql:
+        type: bool
+        required: true
+        description: Run the tasks in this role.
       postgresql_backups:
         type: str
         required: false
@@ -44,10 +57,19 @@ argument_specs:
         type: str
         required: true
         description: PostgreSQL host.
+      postgresql_pkgs:
+        type: list
+        elements: str
+        required: false
+        description: A list of .deb packages that should be present.
       postgresql_port:
         type: int
         required: true
         description: PostgreSQL port number.
+      postgresql_postgres_home_query:
+        type: str
+        required: true
+        description: Internal JMESPATH query variable.
       postgresql_superuser:
         type: str
         required: true
@@ -60,6 +82,10 @@ argument_specs:
         type: str
         required: false
         description: PostgreSQL user database privileges list, comma separated.
+      postgresql_validate:
+        type: bool
+        required: true
+        description: Vaildate all variables that start with postgresql_.
   pgpass_read:
     author: Chris Croome
     description: Ansible role to install PostgreSQL on Debian and optionally create a user and database.
