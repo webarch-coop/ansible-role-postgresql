@@ -23,7 +23,7 @@
         state: directory
         owner: "{{ postgresql_superuser }}"
         group: "{{ postgresql_superuser }}"
-        mode: 0700
+        mode: "0700"
       when:
         - postgresql_backups is defined
         - postgresql_backups | length > 0
@@ -48,7 +48,7 @@
             regex: '^[0-5][0-9]?$'
             create: true
             state: present
-            mode: 0600
+            mode: "0600"
             owner: "{{ postgresql_superuser }}"
             group: "{{ postgresql_superuser }}"
           register: postgresql_cron_min_edited
