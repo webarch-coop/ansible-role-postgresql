@@ -15,6 +15,13 @@
       ansible.builtin.include_tasks: info.yml
       when: postgresql_info is not defined
 
+    - name: The existance of the PostgreSQL user and database is required
+      ansible.builtin.assert:
+        that:
+          - postgresql_db in postgresql_dbs_existing
+          - postgresql_user in postgresql_users_existing
+        quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
+
     - name: Include tasks to set the postgresql_postgres_home variable
       ansible.builtin.include_tasks: home.yml
       when: >-

@@ -51,22 +51,36 @@
             var: postgresql_info
             verbosity: 3
 
-        - name: PostgreSQL user info
-          community.postgresql.postgresql_user_obj_stat_info:
-            db: "{{ postgresql_db }}"
-            login_user: "{{ postgresql_superuser }}"
-          register: postgresql_user_info
+        - name: Set a fact for the existing PostgreSQL databases
+          ansible.builtin.set_fact:
+            postgresql_dbs_existing: "{{ postgresql_info.databases.keys() }}"
+
+        - name: Existing PostgreSQL databases
+          ansible.builtin.debug:
+            var: postgresql_dbs_existing
+
+        - name: List PostgreSQL users
+          community.postgresql.postgresql_query:
+            db: postgres
+            query: 'SELECT u.usename AS "User Name" FROM pg_catalog.pg_user u;'
+          register: postgresql_select_user
           become: true
           become_user: "{{ postgresql_superuser }}"
-          when:
-            - postgresql_db is defined
-            - postgresql_db | length > 0
-            - postgresql_db in postgresql_info.databases.keys()
 
-        - name: Debug PostgreSQL user info
+        - name: Debug existing PostgreSQL databases
           ansible.builtin.debug:
-            var: postgresql_user_info
+            var: postgresql_select_user
             verbosity: 3
+
+        - name: Set a fact for the existing PostgreSQL users
+          ansible.builtin.set_fact:
+            postgresql_users_existing: "{{ postgresql_select_user | community.general.json_query(postgresql_users_existing_jpq) }}"
+          vars:
+            postgresql_users_existing_jpq: 'query_all_results[]."User Name"'
+
+        - name: Existing PostgreSQL users
+          ansible.builtin.debug:
+            var: postgresql_users_existing
 
       when: postgresql_ps_lsclusters_check.stat.exists | bool
 
