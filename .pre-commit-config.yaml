@@ -8,27 +8,11 @@
 #
 # You should have received a copy of the GNU General Public License along with the Webarchitects PostgreSQL Ansible role. If not, see <https://www.gnu.org/licenses/>.
 ---
-- name: PostgreSQL user HOME directory
-  block:
-
-    - name: Getent passwd
-      ansible.builtin.getent:
-        database: passwd
-
-    - name: Debug getent_passwd
-      ansible.builtin.debug:
-        var: getent_passwd
-        verbosity: 4
-
-    - name: Set a variable for the HOME directory of the postgres user
-      ansible.builtin.set_fact:
-        postgresql_postgres_home: "{{ getent_passwd | community.general.json_query(postgresql_postgres_home_query) }}"
-
-    - name: Debug the postgres HOME directory
-      ansible.builtin.debug:
-        var: postgresql_postgres_home
-        verbosity: 1
-
-  tags:
-    - postgresql
+# https://yamllint.readthedocs.io/en/stable/integration.html
+# https://github.com/adrienverge/yamllint/tags
+repos:
+  - repo: https://github.com/adrienverge/yamllint.git
+    rev: v1.30.0
+    hooks:
+      - id: yamllint
 ...

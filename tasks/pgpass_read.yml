@@ -55,23 +55,24 @@
             port: "{{ postgresql_port }}"
           register: postgresql_user_obj_stat_info
 
+        # TODO If the password check above fails delete the line and set
+        # postgresql_password back to an empty string
+
         - name: Debug PostgreSQL user password test
           ansible.builtin.debug:
             var: postgresql_user_obj_stat_info
             verbosity: 3
 
-        # TODO If the password check above fails delete the line and set
-        # postgresql_password back to an empty string
-
       when:
         - postgresql_password is defined
         - postgresql_password | length > 0
-        - postgresql_dbs_existing is defned
+        - postgresql_dbs_existing is defined
         - postgresql_dbs_existing != []
         - postgresql_users_existing is defined
         - postgresql_users_existing != []
         - postgresql_db in postgresql_dbs_existing
         - postgresql_user in postgresql_users_existing
+        - postgresql_info | community.general.json_query(postgresql_user_canlogin_query) | bool
 
   tags:
     - postgresql

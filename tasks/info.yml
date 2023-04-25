@@ -19,20 +19,20 @@
     - name: Gather PostgreSQL info when pg_lsclusters is present
       block:
 
-        - name: Run pg_lsclusters -j
-          ansible.builtin.command: pg_lsclusters -j
-          changed_when: false
-          check_mode: false
-          register: postgresql_ps_lsclusters
+        # - name: Run pg_lsclusters -j
+        #   ansible.builtin.command: pg_lsclusters -j
+        #   changed_when: false
+        #   check_mode: false
+        #   register: postgresql_ps_lsclusters
 
-        - name: Set a fact for the results of pg_lsclusters -j
-          ansible.builtin.set_fact:
-            postgresql_lsclusters: "{{ postgresql_ps_lsclusters.stdout }}"
+        # - name: Set a fact for the results of pg_lsclusters -j
+        #   ansible.builtin.set_fact:
+        #     postgresql_lsclusters: "{{ postgresql_ps_lsclusters.stdout }}"
 
-        - name: Debug postgresql_ps_lsclusters
-          ansible.builtin.debug:
-            var: postgresql_lsclusters
-            verbosity: 2
+        # - name: Debug postgresql_ps_lsclusters
+        #   ansible.builtin.debug:
+        #     var: postgresql_lsclusters
+        #     verbosity: 3
 
         - name: PostgreSQL info
           community.postgresql.postgresql_info:
@@ -55,30 +55,15 @@
           ansible.builtin.set_fact:
             postgresql_dbs_existing: "{{ postgresql_info.databases.keys() }}"
 
-        - name: Existing PostgreSQL databases
+        - name: Debug xisting PostgreSQL databases
           ansible.builtin.debug:
             var: postgresql_dbs_existing
 
-        - name: List PostgreSQL users
-          community.postgresql.postgresql_query:
-            db: postgres
-            query: 'SELECT u.usename AS "User Name" FROM pg_catalog.pg_user u;'
-          register: postgresql_select_user
-          become: true
-          become_user: "{{ postgresql_superuser }}"
-
-        - name: Debug existing PostgreSQL databases
-          ansible.builtin.debug:
-            var: postgresql_select_user
-            verbosity: 3
-
         - name: Set a fact for the existing PostgreSQL users
           ansible.builtin.set_fact:
-            postgresql_users_existing: "{{ postgresql_select_user | community.general.json_query(postgresql_users_existing_jpq) }}"
-          vars:
-            postgresql_users_existing_jpq: 'query_all_results[]."User Name"'
+            postgresql_users_existing: "{{ postgresql_info.roles.keys() }}"
 
-        - name: Existing PostgreSQL users
+        - name: Debug existing PostgreSQL users
           ansible.builtin.debug:
             var: postgresql_users_existing
 

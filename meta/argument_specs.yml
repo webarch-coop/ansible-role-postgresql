@@ -78,6 +78,10 @@ argument_specs:
         type: str
         required: false
         description: PostgreSQL user name.
+      postgresql_user_canlogin_query:
+        type: str
+        required: true
+        description: Internal JMESPath query used with the community.postgresql.postgresql_info module results.
       postgresql_user_privs:
         type: str
         required: false
