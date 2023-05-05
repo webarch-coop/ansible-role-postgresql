@@ -11,7 +11,5 @@
 # https://ansible-lint.readthedocs.io/rules/
 skip_list:
   - key-order[task]
-  - schema[meta]
-  - schema[tasks]
 # vim: syntax=yaml
 ...
