@@ -79,7 +79,7 @@ The PostgreSQL super account, this is set to `postgres` by Debian and probably c
 
 ### postgresql_user
 
-The name of a PostgreSQL user acocunt to create, `postgresql_user` is not defined by default.
+The name of a PostgreSQL user account to create, `postgresql_user` is not defined by default.
 
 ### postgresql_user_privs
 
