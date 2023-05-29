@@ -11,6 +11,16 @@
 - name: Read the PostgreSQL password from the .pgpass file
   block:
 
+    - name: The username, database name, host and port number are required
+      ansible.builtin.assert:
+        that:
+          - postgresql_db is defined
+          - postgresql_db | length > 0
+          - postgresql_user is defined
+          - postgresql_user | length > 0
+          - postgresql_host is defined
+          - postgresql_port is defined
+
     - name: Include the PostgreSQL info tasks
       ansible.builtin.include_tasks: info.yml
       when: postgresql_info is not defined

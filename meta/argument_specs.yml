@@ -97,10 +97,18 @@ argument_specs:
     options:
       postgresql_db:
         type: str
-        required: true
+        required: false
         description: The PostgreSQL database name.
-      postgresql_user:
+      postgresql_host:
         type: str
         required: true
+        description: PostgreSQL host.
+      postgresql_port:
+        type: int
+        required: true
+        description: PostgreSQL port number.
+      postgresql_user:
+        type: str
+        required: false
         description: The PostgreSQL user name.
 ...
