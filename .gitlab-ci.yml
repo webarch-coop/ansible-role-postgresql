@@ -17,6 +17,8 @@ variables:
 before_script:
   - cd
   - source ~/.profile
+  - echo "[defaults]" > ~/ansible.cfg
+  - echo "allow_world_readable_tmpfiles = True" >> ~/ansible.cfg
   - mkdir -p builds/${CI_PROJECT_ROOT_NAMESPACE}
   - cd builds/${CI_PROJECT_ROOT_NAMESPACE}
   - git clone ${CI_PROJECT_URL}.git
