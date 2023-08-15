@@ -31,6 +31,10 @@ before_script:
   - yamllint --version
   - which molecule
   - molecule --version
+  - ls -lah /
+  - ls -lah /tmp
+  - touch /tmp/foo
+  - ls -lah /tmp
 stages:
   - bookworm
   - bullseye
