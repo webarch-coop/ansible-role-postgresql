@@ -44,6 +44,7 @@
               - version
           register: postgresql_info
           become: true
+          become_method: community.general.sudosu
           become_user: "{{ postgresql_superuser }}"
 
         - name: Debug PostgreSQL info
