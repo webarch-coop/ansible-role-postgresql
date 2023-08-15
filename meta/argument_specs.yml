@@ -46,6 +46,10 @@ argument_specs:
         type: str
         required: false
         description: PostgreSQL database locale.
+      postgresql_db_owner:
+        type: str
+        required: false
+        description: PostgreSQL database owner.
       postgresql_db_state:
         type: str
         required: false

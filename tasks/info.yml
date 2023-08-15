@@ -55,7 +55,7 @@
           ansible.builtin.set_fact:
             postgresql_dbs_existing: "{{ postgresql_info.databases.keys() }}"
 
-        - name: Debug xisting PostgreSQL databases
+        - name: Debug existing PostgreSQL databases
           ansible.builtin.debug:
             var: postgresql_dbs_existing
 

@@ -57,6 +57,10 @@ The database character classification (LC_CTYPE), by default `postgresql_db_lc_c
 
 The database locale, if `postgresql_db_locale` is defined and `postgresql_db_lc_collate` and `postgresql_db_lc_ctype` are not then the value of `postgresql_db_locale` will be used for both when creating a database, for example `C`.
 
+### postgresql_db_owner
+
+The, optional, database owner, if not set it will default to `postgres`.
+
 ### postgresql_db_state
 
 The state of the database, see [the module parameter](https://docs.ansible.com/ansible/latest/collections/community/postgresql/postgresql_db_module.html#parameter-state), if not set `postgresql_db_state` defaults to `present`.

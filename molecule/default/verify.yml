@@ -8,7 +8,7 @@
 #
 # You should have received a copy of the GNU General Public License along with the Webarchitects PostgreSQL Ansible role. If not, see <https://www.gnu.org/licenses/>.
 ---
-- name: Run as root
+- name: Verify as root
   become: true
   connection: local
   gather_facts: true
@@ -16,26 +16,36 @@
     - localhost
   tasks:
 
-    - name: Debug ansible_effective_user_id
-      ansible.builtin.debug:
-        var: ansible_effective_user_id
+    - name: PostgreSQL info
+      community.postgresql.postgresql_info:
+        login_user: postgres
+        port: 5432
+        filter:
+          - databases
+          - roles
+          - version
+      register: molecule_postgresql_info
+      become: true
+      become_user: postgres
 
-    - name: Debug ansible_user_id
+    - name: Debug PostgreSQL info
       ansible.builtin.debug:
-        var: ansible_user_id
+        var: molecule_postgresql_info
+        verbosity: 3
 
-    - name: Debug ansible_user_dir
+    - name: Set a fact for the existing PostgreSQL databases
+      ansible.builtin.set_fact:
+        molecule_postgresql_dbs_existing: "{{ molecule_postgresql_info.databases.keys() }}"
+
+    - name: Debug existing PostgreSQL databases
       ansible.builtin.debug:
-        var: ansible_user_dir
+        var: molecule_postgresql_dbs_existing
 
-    - name: Include PostgreSQL role as root
-      ansible.builtin.include_role:
-        name: postgresql
-      vars:  # noqa var-naming[no-role-prefix]
-        postgresql: true
-        postgresql_db: ansible
-        postgresql_db_owner: ansible
-        postgresql_db_state: present
-        postgresql_user: ansible
-        postgresql_user_privs: ALL
+    - name: Set a fact for the existing PostgreSQL users
+      ansible.builtin.set_fact:
+        molecule_postgresql_users_existing: "{{ molecule_postgresql_info.roles.keys() }}"
+
+    - name: Debug existing PostgreSQL users
+      ansible.builtin.debug:
+        var: molecule_postgresql_users_existing
 ...
