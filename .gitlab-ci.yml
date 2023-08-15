@@ -11,14 +11,13 @@
 variables:
   ANSIBLE_DISPLAY_SKIPPED_HOSTS: "0"
   ANSIBLE_FORCE_COLOR: "1"
+  ANSIBLE_SHELL_ALLOW_WORLD_READABLE_TEMP: "1"
   GIT_STRATEGY: none
   MOLECULE_VERBOSITY: "0"
   PY_COLORS: "1"
 before_script:
   - cd
   - source ~/.profile
-  - echo "[defaults]" > ~/ansible.cfg
-  - echo "allow_world_readable_tmpfiles = True" >> ~/ansible.cfg
   - mkdir -p builds/${CI_PROJECT_ROOT_NAMESPACE}
   - cd builds/${CI_PROJECT_ROOT_NAMESPACE}
   - git clone ${CI_PROJECT_URL}.git
