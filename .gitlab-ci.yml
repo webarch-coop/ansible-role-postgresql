@@ -37,17 +37,17 @@ stages:
   - bullseye
   - jammy
 bookworm:
-  image: registry.git.coop/webarch/containers/images/bookworm:20230713
+  image: registry.git.coop/webarch/containers/images/bookworm:20230816
   stage: bookworm
   script:
     - molecule test
 bullseye:
-  image: registry.git.coop/webarch/containers/images/bullseye:20230713
+  image: registry.git.coop/webarch/containers/images/bullseye:20230816
   stage: bullseye
   script:
     - molecule test
 jammy:
-  image: registry.git.coop/webarch/containers/images/jammy:20230713
+  image: registry.git.coop/webarch/containers/images/jammy:20230816
   stage: jammy
   script:
     - molecule test
