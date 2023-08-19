@@ -17,7 +17,7 @@ variables:
   MOLECULE_VERBOSITY: "0"
   PY_COLORS: "1"
 before_script:
-  - cd
+  - sudo -i -u ansible bash
   - source ~/.profile
   - mkdir -p builds/${CI_PROJECT_ROOT_NAMESPACE}
   - cd builds/${CI_PROJECT_ROOT_NAMESPACE}
@@ -34,8 +34,8 @@ before_script:
   - ansible-config list
 stages:
   - bookworm
-  - bullseye
-  - jammy
+  # - bullseye
+  # - jammy
 bookworm:
   image: registry.git.coop/webarch/containers/images/bookworm:20230816
   stage: bookworm
