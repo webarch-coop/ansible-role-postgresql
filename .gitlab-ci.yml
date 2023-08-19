@@ -13,16 +13,16 @@ variables:
   ANSIBLE_FORCE_COLOR: "1"
   ANSIBLE_REMOTE_TMP: "/tmp"
   ANSIBLE_SHELL_ALLOW_WORLD_READABLE_TEMP: "1"
-  GIT_STRATEGY: none
+  # GIT_STRATEGY: none
   MOLECULE_VERBOSITY: "0"
   PY_COLORS: "1"
 before_script:
-  - sudo -i -u ansible bash
-  - source ~/.profile
-  - mkdir -p builds/${CI_PROJECT_ROOT_NAMESPACE}
-  - cd builds/${CI_PROJECT_ROOT_NAMESPACE}
-  - git clone ${CI_PROJECT_URL}.git
-  - cd ${CI_PROJECT_NAME}
+  - whoami
+  # - source ~/.profile
+  # - mkdir -p builds/${CI_PROJECT_ROOT_NAMESPACE}
+  # - cd builds/${CI_PROJECT_ROOT_NAMESPACE}
+  # - git clone ${CI_PROJECT_URL}.git
+  # - cd ${CI_PROJECT_NAME}
   - pwd
   - cat /etc/debian_version
   - which ansible
