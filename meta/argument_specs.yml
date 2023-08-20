@@ -26,6 +26,14 @@ argument_specs:
         type: str
         required: false
         description: Hour for PostgreSQL backup creation.
+      postgresql_cron_min_list:
+        type: list
+        elements: str
+        description: Internal list of minutes that can be used for the backup crontab entry.
+      postgresql_cron_min_regex:
+        type: str
+        required: false
+        description: Internal regex for the crontab minute.
       postgresql_db:
         type: str
         required: false

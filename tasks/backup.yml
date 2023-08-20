@@ -44,8 +44,8 @@
         - name: Crontab random minute file present
           ansible.builtin.lineinfile:
             path: "{{ postgresql_postgres_home }}/.cron_min"
-            line: "{{ 59 | ansible.builtin.random('start', '10') }}"
-            regex: '^[1-5][0-9]?$'
+            line: "{{ postgresql_cron_min_list | ansible.builtin.random }}"
+            regex: "{{ postgresql_cron_min_regex }}"
             create: true
             state: present
             mode: "0600"

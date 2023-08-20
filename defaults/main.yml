@@ -10,7 +10,7 @@
 ---
 postgresql: false
 postgresql_backups: /var/backups/postgres
-postgresql_cron_hour: 2
+postgresql_cron_hour: "02"
 # postgresql_db:
 # postgresql_db_encoding:
 # postgresql_db_lc_collate:
