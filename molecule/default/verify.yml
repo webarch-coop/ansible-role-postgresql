@@ -18,8 +18,8 @@
 
     - name: PostgreSQL info
       community.postgresql.postgresql_info:
+        login_db: postgres
         login_user: postgres
-        maintenance_db: postgres
         port: 5432
         filter:
           - databases
