@@ -55,17 +55,6 @@
         - postgresql_db_modified.executed_commands is defined
         - postgresql_db_modified.executed_commands != []
 
-    - name: PostgreSQL database owner
-      community.postgresql.postgresql_owner:
-        obj_name: "{{ postgresql_db }}"
-        obj_type: database
-        new_owner: "{{ postgresql_db_owner }}"
-        port: "{{ postgresql_port }}"
-        login_user: "{{ postgresql_superuser }}"
-      become: true
-      become_user: "{{ postgresql_superuser }}"
-      when: postgresql_db_owner is defined
-
     - name: Include PostgreSQL info tasks  # noqa: no-handler
       ansible.builtin.include_tasks: info.yml
       when: postgresql_db_modified.changed | bool

@@ -103,6 +103,18 @@
         - postgresql_db_check is defined
         - postgresql_user_check is defined
 
+    - name: PostgreSQL database owner
+      community.postgresql.postgresql_owner:
+        obj_name: "{{ postgresql_db }}"
+        obj_type: database
+        new_owner: "{{ postgresql_db_owner }}"
+        port: "{{ postgresql_port }}"
+        login_user: "{{ postgresql_superuser }}"
+        login_db: "{{ postgresql_maintenance_db }}"
+      become: true
+      become_user: "{{ postgresql_superuser }}"
+      when: postgresql_db_owner is defined
+
   when:
     - postgresql_db is defined
     - postgresql_db | length > 0
