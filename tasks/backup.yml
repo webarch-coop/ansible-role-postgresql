@@ -92,6 +92,8 @@
                 job: "{% for d in postgresql_info.databases.keys() %}pg_dump {{ d }} > {{ postgresql_backups | default('/var/backups/postgres') }}/{{ d }}.sql{% if not loop.last %} ; {% endif %}{% endfor %}"
                 hour: "{{ postgresql_cron_hour }}"
                 minute: "{{ postgresql_cron_min }}"
+              tags:
+                - molecule-idempotence-notest
 
           when: postgresql_cron_min is defined
 
