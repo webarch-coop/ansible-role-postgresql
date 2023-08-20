@@ -44,8 +44,8 @@
         - name: Crontab random minute file present
           ansible.builtin.lineinfile:
             path: "{{ postgresql_postgres_home }}/.cron_min"
-            line: "{{ 59 | ansible.builtin.random }}"
-            regex: '^[0-5][0-9]?$'
+            line: "{{ 59 | ansible.builtin.random('start', '10') }}"
+            regex: '^[1-5][0-9]?$'
             create: true
             state: present
             mode: "0600"
@@ -72,23 +72,27 @@
 
         # TODO This should create one cronjob per database not one for all of them
 
-        - name: Debug crontab
-          ansible.builtin.debug:
-            msg:
-              - "user: {{ postgresql_superuser }}"
-              - "name: Dump PostgreSQL databases"
-              - "job: {% for d in postgresql_info.databases.keys() %}pg_dump {{ d }} > {{ postgresql_backups | default('/var/backups/postgres') }}/{{ d }}.sql{% if not loop.last %} ; {% endif %}{% endfor %}"
-              - "hour: {{ postgresql_cron_hour | default('02') }}"
-              - "minute: {{ postgresql_cron_min | default('UNDEFINED') }}"
-            verbosity: 2
+        - name: Backup crontab present
+          block:
 
-        - name: Crontab present
-          ansible.builtin.cron:
-            user: "{{ postgresql_superuser }}"
-            name: "Dump PostgreSQL databases"
-            job: "{% for d in postgresql_info.databases.keys() %}pg_dump {{ d }} > {{ postgresql_backups | default('/var/backups/postgres') }}/{{ d }}.sql{% if not loop.last %} ; {% endif %}{% endfor %}"
-            hour: "{{ postgresql_cron_hour | default('02') }}"
-            minute: "{{ postgresql_cron_min }}"
+            - name: Debug crontab
+              ansible.builtin.debug:
+                msg:
+                  - "user: {{ postgresql_superuser }}"
+                  - "name: Dump PostgreSQL databases"
+                  - "job: {% for d in postgresql_info.databases.keys() %}pg_dump {{ d }} > {{ postgresql_backups | default('/var/backups/postgres') }}/{{ d }}.sql{% if not loop.last %} ; {% endif %}{% endfor %}"
+                  - "hour: {{ postgresql_cron_hour }}"
+                  - "minute: {{ postgresql_cron_min }}"
+                verbosity: 2
+
+            - name: Crontab present
+              ansible.builtin.cron:
+                user: "{{ postgresql_superuser }}"
+                name: "Dump PostgreSQL databases"
+                job: "{% for d in postgresql_info.databases.keys() %}pg_dump {{ d }} > {{ postgresql_backups | default('/var/backups/postgres') }}/{{ d }}.sql{% if not loop.last %} ; {% endif %}{% endfor %}"
+                hour: "{{ postgresql_cron_hour }}"
+                minute: "{{ postgresql_cron_min }}"
+
           when: postgresql_cron_min is defined
 
       when:
