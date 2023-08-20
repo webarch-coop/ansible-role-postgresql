@@ -42,6 +42,7 @@
         port: "{{ postgresql_port }}"
         state: "{{ postgresql_db_state | default('present') }}"
         login_user: "{{ postgresql_superuser }}"
+        maintenance_db: "{{ postgresql_maintenance_db }}"
       become: true
       become_user: "{{ postgresql_superuser }}"
       register: postgresql_db_modified

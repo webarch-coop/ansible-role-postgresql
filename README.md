@@ -69,6 +69,10 @@ The state of the database, see [the module parameter](https://docs.ansible.com/a
 
 The PostgreSQL host, this variables is required and it defaults to `localhost`.
 
+### postgresql_maintenance_db
+
+The initial PostgreSQL database (which is also called as maintenance DB) that Ansible connects to, it defaults to `postgres`.
+
 ### postgresql_pkgs
 
 A list of Debian packages to be installed by this role.

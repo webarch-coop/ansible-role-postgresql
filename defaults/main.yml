@@ -16,9 +16,10 @@ postgresql_cron_hour: 2
 # postgresql_db_lc_collate:
 # postgresql_db_lc_ctype:
 # postgresql_db_locale:
-# ostgresql_db_owner:
+# postgresql_db_owner:
 # postgresql_db_state: present
 postgresql_host: localhost
+postgresql_maintenance_db: postgres
 postgresql_pkgs:
   - libjson-perl
   - postgresql

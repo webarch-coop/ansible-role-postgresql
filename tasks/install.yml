@@ -40,7 +40,9 @@
 
     - name: Flush handlers  # noqa: no-handler
       ansible.builtin.meta: flush_handlers
-      when: postgresql_pkgs_present.changed | bool
+      when:
+        - postgresql_pkgs_present.changed | bool
+        - postgresql_system_service.stat.exists | bool
 
     - name: Include PostgreSQL info tasks  # noqa: no-handler
       ansible.builtin.include_tasks: info.yml

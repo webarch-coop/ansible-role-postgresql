@@ -61,6 +61,10 @@ argument_specs:
         type: str
         required: true
         description: PostgreSQL host.
+      postgresql_maintenance_db:
+        type: str
+        required: true
+        description: PostgreSQL initial database (which is also called as maintenance DB) that Ansible connects to.
       postgresql_pkgs:
         type: list
         elements: str
