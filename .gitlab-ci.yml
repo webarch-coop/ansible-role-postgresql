@@ -9,22 +9,16 @@
 # You should have received a copy of the GNU General Public License along with the Webarchitects PostgreSQL Ansible role. If not, see <https://www.gnu.org/licenses/>.
 ---
 variables:
+  ANSIBLE_CALLBACK_RESULT_FORMAT: "yaml"
   ANSIBLE_DISPLAY_SKIPPED_HOSTS: "0"
   ANSIBLE_FORCE_COLOR: "1"
   ANSIBLE_REMOTE_TMP: "/tmp"
   ANSIBLE_SHELL_ALLOW_WORLD_READABLE_TEMP: "1"
-  # GIT_STRATEGY: none
   MOLECULE_VERBOSITY: "0"
   PY_COLORS: "1"
 before_script:
   - whoami
-  # - source ~/.profile
-  # - mkdir -p builds/${CI_PROJECT_ROOT_NAMESPACE}
-  # - cd builds/${CI_PROJECT_ROOT_NAMESPACE}
-  # - git clone ${CI_PROJECT_URL}.git
-  # - cd ${CI_PROJECT_NAME}
   - pwd
-  - cat /etc/debian_version
   - which ansible
   - ansible --version
   - which yamllint
@@ -33,21 +27,21 @@ before_script:
   - molecule --version
 stages:
   - bookworm
-  # - bullseye
-  # - jammy
+  - bullseye
+  - jammy
 bookworm:
   image: registry.git.coop/webarch/containers/images/bookworm:20230816
   stage: bookworm
   script:
     - molecule test
-# bullseye:
-#   image: registry.git.coop/webarch/containers/images/bullseye:20230816
-#   stage: bullseye
-#   script:
-#     - molecule test
-# jammy:
-#   image: registry.git.coop/webarch/containers/images/jammy:20230816
-#   stage: jammy
-#   script:
-#     - molecule test
+bullseye:
+  image: registry.git.coop/webarch/containers/images/bullseye:20230816
+  stage: bullseye
+  script:
+    - molecule test
+jammy:
+  image: registry.git.coop/webarch/containers/images/jammy:20230816
+  stage: jammy
+  script:
+    - molecule test
 ...

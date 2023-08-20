@@ -14,7 +14,13 @@ platforms:
   - name: instance
 provisioner:
   name: ansible
+    # host_vars:
+    #   instance:
+    #     ansible_user: ansible
 verifier:
   name: ansible
+    # host_vars:
+    #   instance:
+    #     ansible_user: ansible
 # vim: syntax=yaml
 ...
