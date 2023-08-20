@@ -31,7 +31,6 @@ before_script:
   - yamllint --version
   - which molecule
   - molecule --version
-  - ansible-config list
 stages:
   - bookworm
   # - bullseye

@@ -15,16 +15,11 @@
       ansible.builtin.apt:
         pkg: "{{ postgresql_pkgs }}"
       register: postgresql_pkgs_present
+      notify: Restart postgresql
       when:
         - postgresql_pkgs is defined
         - postgresql_pkgs != []
         - postgresql_pkgs | difference(ansible_local.dpkg.installed) != []
-
-    - name: Include PostgreSQL info tasks  # noqa: no-handler
-      ansible.builtin.include_tasks: info.yml
-      when:
-        - postgresql_pkgs_present is defined
-        - postgresql_pkgs_present.changed | bool
 
     - name: Stat /lib/systemd/system/postgresql.service
       ansible.builtin.stat:
@@ -42,6 +37,16 @@
       ansible.builtin.debug:
         var: postgresql_service
         verbosity: 2
+
+    # - name: Flush handlers
+    #   ansible.builtin.meta: flush_handlers
+    #   when: postgresql_pkgs_present.changed | bool
+
+    - name: Include PostgreSQL info tasks  # noqa: no-handler
+      ansible.builtin.include_tasks: info.yml
+      when:
+        - postgresql_pkgs_present is defined
+        - postgresql_pkgs_present.changed | bool
 
   tags:
     - postgresql
