@@ -54,6 +54,11 @@
           register: postgresql_cron_min_edited
           when: not postgresql_cron_min_file.stat.exists | bool
 
+        - name: Stat the random minute file
+          ansible.builtin.stat:
+            path: "{{ postgresql_postgres_home }}/.cron_min"
+          register: postgresql_cron_min_file
+
         - name: Read the minute from the ~/.cron_min file
           ansible.builtin.slurp:
             src: "{{ postgresql_postgres_home }}/.cron_min"
@@ -63,9 +68,7 @@
         - name: Set a variable for the users crontab minute
           ansible.builtin.set_fact:
             postgresql_cron_min: "{{ postgresql_cron_min_b64encoded['content'] | ansible.builtin.b64decode | trim }}"
-          when:
-            - postgresql_cron_min_file.stat.exists | bool
-            - postgresql_cron_min_b64encoded is defined
+          when: postgresql_cron_min_b64encoded is defined
 
         # TODO This should create one cronjob per database not one for all of them
 

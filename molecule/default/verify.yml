@@ -25,9 +25,10 @@
           - databases
           - roles
           - version
-      register: molecule_postgresql_info
       become: true
       become_user: postgres
+      changed_when: false
+      register: molecule_postgresql_info
 
     - name: Debug PostgreSQL info
       ansible.builtin.debug:
