@@ -80,7 +80,7 @@
                 msg:
                   - "user: {{ postgresql_superuser }}"
                   - "name: Dump PostgreSQL databases"
-                  - "job: {% for d in postgresql_info.databases.keys() %}pg_dump {{ d }} > {{ postgresql_backups | default('/var/backups/postgres') }}/{{ d }}.sql{% if not loop.last %} ; {% endif %}{% endfor %}"
+                  - "job: {% for d in postgresql_info.databases.keys() | sort %}pg_dump {{ d }} > {{ postgresql_backups | default('/var/backups/postgres') }}/{{ d }}.sql{% if not loop.last %} ; {% endif %}{% endfor %}"
                   - "hour: {{ postgresql_cron_hour }}"
                   - "minute: {{ postgresql_cron_min }}"
                 verbosity: 2
