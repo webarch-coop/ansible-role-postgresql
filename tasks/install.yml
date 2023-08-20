@@ -38,9 +38,9 @@
         var: postgresql_service
         verbosity: 2
 
-    # - name: Flush handlers
-    #   ansible.builtin.meta: flush_handlers
-    #   when: postgresql_pkgs_present.changed | bool
+    - name: Flush handlers  # noqa: no-handler
+      ansible.builtin.meta: flush_handlers
+      when: postgresql_pkgs_present.changed | bool
 
     - name: Include PostgreSQL info tasks  # noqa: no-handler
       ansible.builtin.include_tasks: info.yml
