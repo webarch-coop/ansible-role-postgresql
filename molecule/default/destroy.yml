@@ -8,7 +8,7 @@
 #
 # You should have received a copy of the GNU General Public License along with the Webarchitects PostgreSQL Ansible role. If not, see <https://www.gnu.org/licenses/>.
 ---
-- name: Run cleanup as root
+- name: Run as destroy root
   # become: true
   connection: local
   gather_facts: true
@@ -16,8 +16,8 @@
     - localhost
   tasks:
 
-    - name: Stop PostgreSQL
+    - name: Stop Bash service
       ansible.builtin.systemd:
-        name: postgresql
+        name: bash
         state: stopped
 ...
