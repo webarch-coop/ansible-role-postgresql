@@ -16,8 +16,6 @@
     - localhost
   tasks:
 
-    - name: Stop Bash service
-      ansible.builtin.systemd:
-        name: bash
-        state: stopped
+    - name: Shutdown container
+      community.general.shutdown:
 ...
