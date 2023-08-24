@@ -29,7 +29,7 @@
     - name: PostgreSQL enabled
       ansible.builtin.service:
         name: postgresql
-        state: enabled
+        state: started
       register: postgresql_service
       when: postgresql_system_service.stat.exists | bool
 
