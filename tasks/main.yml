@@ -14,7 +14,7 @@
     - name: This role only currently supports Debian Trixie, Bookworm, Bullseye and Ubuntu Jammy
       ansible.builtin.assert:
         that:
-          - ansible_distribution_release is regex{'^bookworm|bullseye|jammy|trixie$')
+          - ansible_distribution_release is regex('^bookworm|bullseye|jammy|trixie$')
         quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
 
     - name: Validate PostgreSQL variables
