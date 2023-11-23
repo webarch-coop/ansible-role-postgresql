@@ -14,6 +14,17 @@ postgresqlhostvars: "{{ dict(postgresqlvarnames | list | zip(q('vars', *postgres
 
 postgresql_postgres_home_query: "{{ postgresql_superuser }}[4]"
 postgresql_user_canlogin_query: "roles.{{ postgresql_user }}.canlogin"
+postgresql_psycopg_pkg_query: "[?distro=='{{ ansible_distribution_release }}'].pkg|[0]"
+
+postgresql_psycopg_pkg:
+  - distro: bookworm
+    pkg: python3-psycopg
+  - distro: bullseye
+    pkg: python3-psycopg2
+  - distro: jammy
+    pkg: python3-psycopg2
+  - distro: trixie
+    pkg: python3-psycopg
 
 postgresql_cron_min_list:
   - "10"

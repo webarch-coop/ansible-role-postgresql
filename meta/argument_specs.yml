@@ -86,6 +86,23 @@ argument_specs:
         type: str
         required: true
         description: Internal JMESPATH query variable.
+      postgresql_psycopg_pkg:
+        type: list
+        required: true
+        description: Internal list of psycopg packges for different Debian / Ubuntu versions
+        options:
+          distro:
+            type: str
+            required: true
+            description: The value of the ansible_distribution_release variable.
+          pkg:
+            type: str
+            required: true
+            description: The name of the psycopg package.
+      postgresql_psycopg_pkg_query:
+        type: str
+        required: true
+        description: Internal JMESPath query for the distro / psycopg package.
       postgresql_superuser:
         type: str
         required: true

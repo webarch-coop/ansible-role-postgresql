@@ -11,9 +11,16 @@
 - name: PostgreSQL installed
   block:
 
+    - name: Psycopg package present
+      ansible.builtin.apt:
+        pkg: "{{ postgresql_psycopg_pkg | community.general.json_query(postgresql_psycopg_pkg_query) }}"
+        update_cache: true
+      register: postgresql_psycopg_present
+
     - name: PostgreSQL packages present
       ansible.builtin.apt:
         pkg: "{{ postgresql_pkgs }}"
+        cache_valid_time: 60
       register: postgresql_pkgs_present
       notify: Restart postgresql
       when:
