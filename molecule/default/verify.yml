@@ -20,7 +20,7 @@
       community.postgresql.postgresql_info:
         login_db: postgres
         login_user: postgres
-        port: 5432
+        port: 5433
         filter:
           - databases
           - roles

@@ -36,6 +36,7 @@
         postgresql_db: ansible
         postgresql_db_owner: ansible
         postgresql_db_state: present
+        postgresql_port: 5433
         postgresql_user: ansible
         postgresql_user_privs: ALL
 ...
