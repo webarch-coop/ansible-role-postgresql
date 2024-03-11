@@ -66,6 +66,9 @@
         password: "{{ postgresql_password }}"
         db: "{{ postgresql_db }}"
         state: present
+        login_db: "{{ postgresql_maintenance_db }}"
+        login_user: "{{ postgresql_superuser }}"
+        port: "{{ postgresql_port }}"
       no_log: "{% if ansible_verbosity < 2 %}true{% else %}false{% endif %}"
       become: true
       become_user: "{{ postgresql_superuser }}"
@@ -94,6 +97,9 @@
         role: "{{ postgresql_user }}"
         privs: "{{ postgresql_user_privs | default('ALL') }}"
         state: present
+        login_db: "{{ postgresql_maintenance_db }}"
+        login_user: "{{ postgresql_superuser }}"
+        port: "{{ postgresql_port }}"
       no_log: "{% if ansible_verbosity < 2 %}true{% else %}false{% endif %}"
       become: true
       become_user: "{{ postgresql_superuser }}"
