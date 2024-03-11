@@ -59,6 +59,7 @@
 
             - name: Update the PostgreSQL port
               ansible.builtin.lineinfile:
+                path: "/etc/postgresql/{{ postgresql_installed_version }}/main/postgresql.conf"
                 line: "port = {{ postgresql_port }}"
                 state: present
                 regex: '^port[ ][=][ ]'
