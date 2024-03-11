@@ -1,4 +1,4 @@
-# Copyright 2020-2023 Chris Croome
+# Copyright 2020-2024 Chris Croome
 #
 # This file is part of the Webarchitects PostgreSQL Ansible role.
 #
@@ -8,6 +8,15 @@
 #
 # You should have received a copy of the GNU General Public License along with the Webarchitects PostgreSQL Ansible role. If not, see <https://www.gnu.org/licenses/>.
 ---
+- name: PostgreSQL role skipped
+  ansible.builtin.debug:
+    msg: "The tasks in the PostgreSQL role are not being run since the postgresql variable is not true."
+  when: >-
+    ( postgresql is not defined ) or
+    ( not postgresql | bool )
+  tags:
+    - postgresql
+
 - name: Install and configure PostgreSQL
   block:
 
@@ -32,6 +41,9 @@
 
     - name: PostgreSQL install tasks
       ansible.builtin.include_tasks: install.yml
+
+    - name: PostgreSQL config tasks
+      ansible.builtin.include_tasks: conf.yml
 
     - name: PostgreSQL info tasks
       ansible.builtin.include_tasks: info.yml
@@ -64,7 +76,9 @@
         ( postgresql_service.skipped is not defined ) or
         ( not postgresql_service.skipped | bool )
 
-  when: postgresql | bool
+  when:
+    - postgresql is defined
+    - postgresql | bool
   tags:
     - postgresql
 ...

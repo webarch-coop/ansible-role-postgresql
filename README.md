@@ -15,7 +15,7 @@ This role can be included using the tasks from the [tasks/pgpass_read.yml](tasks
 
 ## Requirements
 
-This role requires [JC](https://github.com/kellyjonbrazil/jc) version [1.22.3](https://github.com/kellyjonbrazil/jc/releases/tag/v1.22.3) to be installed on the Ansible controller as the [PostgreSQL password file parser](https://kellyjonbrazil.github.io/jc/docs/parsers/pgpass) is used to read passwords from `/var/lib/postgresql/.pgpass`.
+This role requires [JC](https://github.com/kellyjonbrazil/jc) version [1.22.3](https://github.com/kellyjonbrazil/jc/releases/tag/v1.22.3) to be installed on the Ansible controller as the [PostgreSQL password file parser](https://kellyjonbrazil.github.io/jc/docs/parsers/pgpass) is used to read passwords from `/var/lib/postgresql/.pgpass` and the [ini file parser](https://kellyjonbrazil.github.io/jc/docs/parsers/ini) is used to parse the `postgresql.conf` file.
 
 ## Defaults
 
@@ -79,7 +79,7 @@ A list of Debian packages to be installed by this role.
 
 ### postgresql_port
 
-The port PostgreSQL uses, `postgresql_port` defaults to `5432`.
+The port PostgreSQL uses, `postgresql_port` defaults to `5432`, if `postgresql_port` is set to a value that differs from the port PostgreSQL is using then this role will update the port PostgreSQL uses.
 
 ### postgresql_superuser
 
@@ -118,6 +118,8 @@ apt remove postgresql-11 postgresql-client-11
 The primary URL of this repo is [`https://git.coop/webarch/postgresql`](https://git.coop/webarch/postgresql) however it is also [mirrored to GitHub](https://github.com/webarch-coop/ansible-role-postgresql) and [available via Ansible Galaxy](https://galaxy.ansible.com/chriscroome/postgresql).
 If you use this role please use a tagged release, see [the release notes](https://git.coop/webarch/postgresql/-/releases).
 
-## License
+## Copyright
+
+Copyright 2020-2024 Chris Croome, &lt;[chris@webarchitects.co.uk](mailto:chris@webarchitects.co.uk)&gt;.
 
 This role is released under [the same terms as Ansible itself](https://github.com/ansible/ansible/blob/devel/COPYING), the [GNU GPLv3](LICENSE).

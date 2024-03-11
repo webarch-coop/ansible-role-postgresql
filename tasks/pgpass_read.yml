@@ -1,4 +1,4 @@
-# Copyright 2020-2023 Chris Croome
+# Copyright 2020-2024 Chris Croome
 #
 # This file is part of the Webarchitects PostgreSQL Ansible role.
 #
@@ -20,6 +20,7 @@
           - postgresql_user | length > 0
           - postgresql_host is defined
           - postgresql_port is defined
+        quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
 
     - name: Include the PostgreSQL info tasks
       ansible.builtin.include_tasks: info.yml

@@ -1,4 +1,4 @@
-# Copyright 2020-2023 Chris Croome
+# Copyright 2020-2024 Chris Croome
 #
 # This file is part of the Webarchitects PostgreSQL Ansible role.
 #
@@ -50,12 +50,6 @@
       when:
         - postgresql_pkgs_present.changed | bool
         - postgresql_system_service.stat.exists | bool
-
-    - name: Include PostgreSQL info tasks  # noqa: no-handler
-      ansible.builtin.include_tasks: info.yml
-      when:
-        - postgresql_pkgs_present is defined
-        - postgresql_pkgs_present.changed | bool
 
   tags:
     - postgresql

@@ -1,0 +1,83 @@
+# Copyright 2020-2024 Chris Croome
+#
+# This file is part of the Webarchitects PostgreSQL Ansible role.
+#
+# The Webarchitects PostgreSQL Ansible role is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+#
+# The Webarchitects PostgreSQL Ansible role is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with the Webarchitects PostgreSQL Ansible role. If not, see <https://www.gnu.org/licenses/>.
+---
+- name: PostgreSQL configuration
+  block:
+
+    - name: Get the apt package facts
+      ansible.builtin.package_facts:
+        manager: apt
+
+    - name: Check PostgreSQL when installed
+      block:
+
+        - name: Debug the installed postgresql package version string
+          ansible.builtin.debug:
+            var: ansible_facts.packages.postgresql[0].version
+            verbosity: 1
+
+        - name: Set a fact for the .deb package postgresql version
+          ansible.builtin.set_fact:
+            postgresql_installed_version: "{{ ansible_facts.packages.postgresql[0].version | regex_replace('[+].*$') | string }}"
+
+        - name: Debug the installed postgresql package version
+          ansible.builtin.debug:
+            var: postgresql_installed_version
+
+        - name: Stat postgresql.conf
+          ansible.builtin.stat:
+            path: "/etc/postgresql/{{ postgresql_installed_version }}/main/postgresql.conf"
+          register: postgresql_conf_path
+
+        - name: Read postgresql.conf when it is present
+          block:
+
+            - name: Read the postgresql.conf
+              ansible.builtin.shell: |-
+                set -e -o pipefail
+                cat /etc/postgresql/{{ postgresql_installed_version }}/main/postgresql.conf | sed 's/[#].*$//'
+              args:
+                executable: "{{ ansible_local.bash.path }}"
+              check_mode: false
+              changed_when: false
+              register: postgresql_conf_ini
+
+            - name: Set a fact for the PostgreSQL configuration
+              ansible.builtin.set_fact:
+                postgresql_conf: "{{ postgresql_conf_ini.stdout | trim | string | community.general.jc('ini') }}"
+
+            - name: Debug the postgresql.conf contents
+              ansible.builtin.debug:
+                var: postgresql_conf
+
+            - name: Update the PostgreSQL port
+              ansible.builtin.lineinfile:
+                line: "port = {{ postgresql_port }}"
+                state: present
+                regex: '^port[ ][=][ ]'
+                owner: postgres
+                group: postgres
+                mode: "0644"
+                register: postgresql_conf_port
+              when:
+                - postgresql_conf.port is defined
+                - postgresql_conf.port != postgresql_port
+
+            - name: Flush handlers  # noqa: no-handler
+              ansible.builtin.meta: flush_handlers
+              when: postgresql_conf_port.changed | bool
+
+          when: postgresql_conf_path.stat.exists | bool
+
+      when: ( "postgresql" in ansible_facts.packages )
+
+  tags:
+    - postgresql
+...
