@@ -67,6 +67,7 @@
                 group: postgres
                 mode: "0644"
               register: postgresql_conf_port
+              notify: Restart postgresql
               when:
                 - postgresql_conf.port is defined
                 - postgresql_conf.port != postgresql_port
