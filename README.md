@@ -99,13 +99,15 @@ A boolean, validate variabels that start with `postgresql_` using the [meta/argu
 
 ## Upgrading Debian versions
 
-After upgrading Debian PostgreSQL need to be upgraded, for example when going from Buster to Bullseye:
+After upgrading Debian PostgreSQL needs to be upgraded, for example when going from Buster to Bullseye:
 
 ```bash
 pg_dropcluster --stop 13 main
 pg_upgradecluster 11 main
 apt remove postgresql-11 postgresql-client-11
 ```
+
+The upgrade will also change the port number that PostgreSQL runs on so that both the previous version and the new version can run at the same time, this role can be used to revert the port number after the upgrade.
 
 ## References
 
