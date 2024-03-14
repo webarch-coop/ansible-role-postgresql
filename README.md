@@ -99,7 +99,15 @@ A boolean, validate variabels that start with `postgresql_` using the [meta/argu
 
 ## Upgrading Debian versions
 
-After upgrading Debian PostgreSQL needs to be upgraded, for example when going from Buster to Bullseye:
+After upgrading Debian PostgreSQL needs to be upgraded, for example when going from Bullseye to Bookworm:
+
+```bash
+pg_dropcluster --stop 15 main
+pg_upgradecluster 13 main
+apt remove postgresql-13 postgresql-client-13
+```
+
+And Buster to Bullseye:
 
 ```bash
 pg_dropcluster --stop 13 main
