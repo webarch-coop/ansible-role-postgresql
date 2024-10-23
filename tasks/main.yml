@@ -20,10 +20,10 @@
 - name: Install and configure PostgreSQL
   block:
 
-    - name: This role only currently supports Debian Trixie, Bookworm, Bullseye and Ubuntu Jammy
+    - name: This role only currently supports Debian Trixie, Bookworm, Bullseye and Ubuntu Jammy and Noble
       ansible.builtin.assert:
         that:
-          - ansible_facts.distribution_release is regex('^bookworm|bullseye|jammy|trixie$')
+          - ansible_facts.distribution_release is regex('^bookworm|bullseye|jammy|noble|trixie$')
         quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
 
     - name: Validate PostgreSQL variables
