@@ -17,12 +17,12 @@
 
     - name: Debug getent_passwd
       ansible.builtin.debug:
-        var: getent_passwd
+        var: ansible_facts.getent_passwd
         verbosity: 4
 
     - name: Set a variable for the HOME directory of the postgres user
       ansible.builtin.set_fact:
-        postgresql_postgres_home: "{{ getent_passwd | community.general.json_query(postgresql_postgres_home_query) }}"
+        postgresql_postgres_home: "{{ ansible_facts.getent_passwd | community.general.json_query(postgresql_postgres_home_query) }}"
 
     - name: Debug the postgres HOME directory
       ansible.builtin.debug:

@@ -9,28 +9,28 @@
 # You should have received a copy of the GNU General Public License along with the Webarchitects PostgreSQL Ansible role. If not, see <https://www.gnu.org/licenses/>.
 ---
 repos:
-  # https://github.com/jackdewinter/pymarkdown/releases
-  - repo: https://github.com/jackdewinter/pymarkdown.git
-    rev: v0.9.17
-    hooks:
-      - id: pymarkdown
-        name: Markdown Lint
   # https://github.com/adrienverge/yamllint/tags
   - repo: https://github.com/adrienverge/yamllint.git
     rev: v1.35.1
     hooks:
       - id: yamllint
         name: YAML Lint
+  # https://github.com/jackdewinter/pymarkdown/releases
+  - repo: https://github.com/jackdewinter/pymarkdown.git
+    rev: v0.9.24
+    hooks:
+      - id: pymarkdown
+        name: Markdown Lint
   # https://github.com/ansible/ansible-lint/releases
   - repo: https://github.com/ansible/ansible-lint.git
-    rev: v24.2.0
+    rev: v24.9.2
     hooks:
       - id: ansible-lint
         name: Ansible Lint
         language: python
         additional_dependencies:
           # https://github.com/kellyjonbrazil/jc/releases
-          - jc==1.25.1
+          - jc==1.25.3
           # https://github.com/jmespath/jmespath.py/tags
           - jmespath==1.0.1
 ...

@@ -94,7 +94,7 @@ argument_specs:
           distro:
             type: str
             required: true
-            description: The value of the ansible_distribution_release variable.
+            description: The value of the ansible_facts.distribution_release variable.
           pkg:
             type: str
             required: true

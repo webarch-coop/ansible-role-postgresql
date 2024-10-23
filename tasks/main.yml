@@ -23,7 +23,7 @@
     - name: This role only currently supports Debian Trixie, Bookworm, Bullseye and Ubuntu Jammy
       ansible.builtin.assert:
         that:
-          - ansible_distribution_release is regex('^bookworm|bullseye|jammy|trixie$')
+          - ansible_facts.distribution_release is regex('^bookworm|bullseye|jammy|trixie$')
         quiet: "{% if ansible_verbosity == 0 %}true{% else %}false{% endif %}"
 
     - name: Validate PostgreSQL variables
@@ -35,9 +35,9 @@
         name: apt
         tasks_from: local_facts.yml
       when: >-
-        ( ansible_local.dpkg.arch is not defined ) or
-        ( ansible_local.gpg.version is not defined ) or
-        ( ansible_local.bash.path is not defined )
+        ( ansible_facts.ansible_local.dpkg.arch is not defined ) or
+        ( ansible_facts.ansible_local.gpg.version is not defined ) or
+        ( ansible_facts.ansible_local.bash.path is not defined )
 
     - name: PostgreSQL install tasks
       ansible.builtin.include_tasks: install.yml

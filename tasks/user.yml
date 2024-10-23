@@ -104,8 +104,8 @@
       become: true
       become_user: "{{ postgresql_superuser }}"
       vars:
-        postgresql_db_check: "{{ ansible_local['postgresql_info.databases.' ~ postgresql_db] }}"
-        postgresql_user_check: "{{ ansible_local['postgresql_info.roles.' ~ postgresql_user] }}"
+        postgresql_db_check: "{{ ansible_facts.ansible_local['postgresql_info.databases.' ~ postgresql_db] }}"
+        postgresql_user_check: "{{ ansible_facts.ansible_local['postgresql_info.roles.' ~ postgresql_user] }}"
       when:
         - postgresql_db_check is defined
         - postgresql_user_check is defined

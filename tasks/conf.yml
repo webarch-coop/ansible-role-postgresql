@@ -44,7 +44,7 @@
                 set -e -o pipefail
                 cat /etc/postgresql/{{ postgresql_installed_version }}/main/postgresql.conf | sed 's/[#].*$//'
               args:
-                executable: "{{ ansible_local.bash.path }}"
+                executable: "{{ ansible_facts.ansible_local.bash.path }}"
               check_mode: false
               changed_when: false
               register: postgresql_conf_ini
@@ -78,7 +78,7 @@
 
           when: postgresql_conf_path.stat.exists | bool
 
-      when: ( "postgresql" in ansible_facts.packages )
+      when: ( "postgresql" in ansible_facts.packages.keys() )
 
   tags:
     - postgresql
