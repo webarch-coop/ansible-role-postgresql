@@ -51,42 +51,39 @@
               become_method: community.general.sudosu
               become_user: "{{ postgresql_superuser }}"
 
-            - name: Debug PostgreSQL info
-              ansible.builtin.debug:
-                var: postgresql_info
-                verbosity: 3
-
             - name: Set a fact for the existing PostgreSQL databases
               ansible.builtin.set_fact:
                 postgresql_dbs_existing: "{{ postgresql_info.databases.keys() }}"
+              when: postgresql_info is defined
 
             - name: Debug existing PostgreSQL databases
               ansible.builtin.debug:
                 var: postgresql_dbs_existing
+                verbosity: "{% if ansible_check_mode | bool or ansible_diff_mode | bool %}0{% else %}1{% endif %}"
+              when: postgresql_dbs_existing is defined
+
+            - name: PostgreSQL existing database info
+              ansible.builtin.debug:
+                msg: "{{ postgresql_info | community.general.json_query(postgresql_db_query) }}"
+                verbosity: 2
+              vars:
+                postgresql_db_query: "databases.{{ postgresql_db }}"
+              when:
+                - postgresql_info is defined
+                - postgresql_db in postgresql_info.databases.keys()
 
             - name: Set a fact for the existing PostgreSQL users
               ansible.builtin.set_fact:
                 postgresql_users_existing: "{{ postgresql_info.roles.keys() }}"
+              when: postgresql_info is defined
 
             - name: Debug existing PostgreSQL users
               ansible.builtin.debug:
                 var: postgresql_users_existing
+                verbosity: "{% if ansible_check_mode | bool or ansible_diff_mode | bool %}0{% else %}1{% endif %}"
+              when: postgresql_users_existing is defined
 
           rescue:
-
-            # - name: Run pg_lsclusters -j
-            #   ansible.builtin.command: pg_lsclusters -j
-            #   changed_when: false
-            #   check_mode: false
-            #   register: postgresql_ps_lsclusters
-
-            # - name: Set a fact for the results of pg_lsclusters -j
-            #   ansible.builtin.set_fact:
-            #     postgresql_lsclusters: "{{ postgresql_ps_lsclusters.stdout }}"
-
-            # - name: Debug postgresql_ps_lsclusters
-            #   ansible.builtin.debug:
-            #     var: postgresql_lsclusters
 
             - name: Debug PostgreSQL info
               ansible.builtin.debug:

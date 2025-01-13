@@ -22,16 +22,6 @@
       ansible.builtin.include_tasks: info.yml
       when: postgresql_info is not defined
 
-    - name: PostgreSQL existing database info
-      ansible.builtin.debug:
-        msg: "{{ postgresql_info | community.general.json_query(postgresql_db_query) }}"
-        verbosity: 2
-      vars:
-        postgresql_db_query: "databases.{{ postgresql_db }}"
-      when:
-        - postgresql_info is defined
-        - postgresql_db in postgresql_info.databases.keys()
-
     - name: PostgreSQL database
       community.postgresql.postgresql_db:
         name: "{{ postgresql_db }}"
