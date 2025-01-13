@@ -95,7 +95,9 @@
               tags:
                 - molecule-idempotence-notest
 
-          when: postgresql_cron_min is defined
+          when:
+            - postgresql_cron_min is defined
+            - postgresql_info is defined
 
       when:
         - postgresql_backups is defined
