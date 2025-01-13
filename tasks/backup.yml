@@ -95,6 +95,12 @@
               tags:
                 - molecule-idempotence-notest
 
+          rescue:
+
+            - name: PostgreSQL crontab backupjob configuration failed
+              ansible.builtin.debug:
+                msg: PostgreSQL crontab backupjob configuration failed
+
           when:
             - postgresql_cron_min is defined
             - postgresql_info is defined
