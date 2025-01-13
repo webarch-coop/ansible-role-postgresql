@@ -83,6 +83,16 @@
                 verbosity: "{% if ansible_check_mode | bool or ansible_diff_mode | bool %}0{% else %}1{% endif %}"
               when: postgresql_users_existing is defined
 
+            - name: PostgreSQL existing role info
+              ansible.builtin.debug:
+                msg: "{{ postgresql_info | community.general.json_query(postgresql_role_query) }}"
+                verbosity: 2
+              vars:
+                postgresql_role_query: "roles.{{ postgresql_user }}"
+              when:
+                - postgresql_info is defined
+                - postgresql_db in postgresql_info.roles.keys()
+
           rescue:
 
             - name: Debug PostgreSQL info

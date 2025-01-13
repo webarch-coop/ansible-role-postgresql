@@ -23,16 +23,6 @@
       ansible.builtin.include_tasks: info.yml
       when: postgresql_info is not defined
 
-    - name: PostgreSQL existing role info
-      ansible.builtin.debug:
-        msg: "{{ postgresql_info | community.general.json_query(postgresql_role_query) }}"
-        verbosity: 2
-      vars:
-        postgresql_role_query: "roles.{{ postgresql_user }}"
-      when:
-        - postgresql_info is defined
-        - postgresql_db in postgresql_info.roles.keys()
-
     - name: Include tasks to set the postgresql_postgres_home variable
       ansible.builtin.include_tasks: home.yml
       when: >-
