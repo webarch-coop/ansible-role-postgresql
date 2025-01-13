@@ -1,4 +1,4 @@
-# Copyright 2020-2024 Chris Croome
+# Copyright 2020-2025 Chris Croome
 #
 # This file is part of the Webarchitects PostgreSQL Ansible role.
 #
@@ -35,39 +35,62 @@
         #     verbosity: 3
 
         - name: PostgreSQL info
-          community.postgresql.postgresql_info:
-            login_db: "{{ postgresql_maintenance_db }}"
-            login_user: "{{ postgresql_superuser }}"
-            port: "{{ postgresql_port }}"
-            filter:
-              - databases
-              - roles
-              - version
-          register: postgresql_info
-          become: true
-          become_method: community.general.sudosu
-          become_user: "{{ postgresql_superuser }}"
+          block:
 
-        - name: Debug PostgreSQL info
-          ansible.builtin.debug:
-            var: postgresql_info
-            verbosity: 3
+            - name: PostgreSQL info
+              community.postgresql.postgresql_info:
+                login_db: "{{ postgresql_maintenance_db }}"
+                login_user: "{{ postgresql_superuser }}"
+                port: "{{ postgresql_port }}"
+                filter:
+                  - databases
+                  - roles
+                  - version
+              register: postgresql_info
+              become: true
+              become_method: community.general.sudosu
+              become_user: "{{ postgresql_superuser }}"
 
-        - name: Set a fact for the existing PostgreSQL databases
-          ansible.builtin.set_fact:
-            postgresql_dbs_existing: "{{ postgresql_info.databases.keys() }}"
+            - name: Debug PostgreSQL info
+              ansible.builtin.debug:
+                var: postgresql_info
+                verbosity: 3
 
-        - name: Debug existing PostgreSQL databases
-          ansible.builtin.debug:
-            var: postgresql_dbs_existing
+            - name: Set a fact for the existing PostgreSQL databases
+              ansible.builtin.set_fact:
+                postgresql_dbs_existing: "{{ postgresql_info.databases.keys() }}"
 
-        - name: Set a fact for the existing PostgreSQL users
-          ansible.builtin.set_fact:
-            postgresql_users_existing: "{{ postgresql_info.roles.keys() }}"
+            - name: Debug existing PostgreSQL databases
+              ansible.builtin.debug:
+                var: postgresql_dbs_existing
 
-        - name: Debug existing PostgreSQL users
-          ansible.builtin.debug:
-            var: postgresql_users_existing
+            - name: Set a fact for the existing PostgreSQL users
+              ansible.builtin.set_fact:
+                postgresql_users_existing: "{{ postgresql_info.roles.keys() }}"
+
+            - name: Debug existing PostgreSQL users
+              ansible.builtin.debug:
+                var: postgresql_users_existing
+
+          rescue:
+
+            # - name: Run pg_lsclusters -j
+            #   ansible.builtin.command: pg_lsclusters -j
+            #   changed_when: false
+            #   check_mode: false
+            #   register: postgresql_ps_lsclusters
+
+            # - name: Set a fact for the results of pg_lsclusters -j
+            #   ansible.builtin.set_fact:
+            #     postgresql_lsclusters: "{{ postgresql_ps_lsclusters.stdout }}"
+
+            # - name: Debug postgresql_ps_lsclusters
+            #   ansible.builtin.debug:
+            #     var: postgresql_lsclusters
+
+            - name: Debug PostgreSQL info
+              ansible.builtin.debug:
+                var: postgresql_info
 
       when: postgresql_ps_lsclusters_check.stat.exists | bool
 
