@@ -24,7 +24,6 @@ postgresql_pkgs:
   - libjson-perl
   - postgresql
   - pwgen
-  - python3-psycopg2
 postgresql_port: 5432
 postgresql_superuser: postgres
 # postgresql_user:

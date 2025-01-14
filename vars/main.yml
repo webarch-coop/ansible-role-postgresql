@@ -18,7 +18,7 @@ postgresql_psycopg_pkg_query: "[?distro=='{{ ansible_facts.distribution_release 
 
 postgresql_psycopg_pkg:
   - distro: bookworm
-    pkg: python3-psycopg
+    pkg: python3-psycopg2
   - distro: bullseye
     pkg: python3-psycopg2
   - distro: jammy
@@ -26,7 +26,7 @@ postgresql_psycopg_pkg:
   - distro: noble
     pkg: python3-psycopg2
   - distro: trixie
-    pkg: python3-psycopg
+    pkg: python3-psycopg2
 
 postgresql_cron_min_list:
   - "10"

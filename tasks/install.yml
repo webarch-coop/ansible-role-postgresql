@@ -11,10 +11,12 @@
 - name: PostgreSQL installed
   block:
 
-    - name: Psycopg package present
+    - name: "Psycopg package present {{ postgresql_psycopg_version }}"
       ansible.builtin.apt:
-        pkg: "{{ postgresql_psycopg_pkg | community.general.json_query(postgresql_psycopg_pkg_query) }}"
+        pkg: "{{ postgresql_psycopg_version }}"
         update_cache: true
+      vars:
+        postgresql_psycopg_version: "{{ postgresql_psycopg_pkg | community.general.json_query(postgresql_psycopg_pkg_query) }}"
       register: postgresql_psycopg_present
 
     - name: PostgreSQL packages present
