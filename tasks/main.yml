@@ -41,12 +41,18 @@
 
     - name: PostgreSQL install tasks
       ansible.builtin.include_tasks: install.yml
+      tags:
+        - postgresql_install
 
     - name: PostgreSQL config tasks
       ansible.builtin.include_tasks: conf.yml
+      tags:
+        - postgresql_conf
 
     - name: PostgreSQL info tasks
       ansible.builtin.include_tasks: info.yml
+      tags:
+        - postgresql_info
 
     - name: PostgreSQL user and database present
       block:

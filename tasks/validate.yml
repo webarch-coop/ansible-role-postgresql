@@ -28,4 +28,5 @@
 
   tags:
     - postgresql
+    - postgresql_validate
 ...

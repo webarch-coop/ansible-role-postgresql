@@ -37,7 +37,7 @@
         - name: PostgreSQL info
           block:
 
-            - name: PostgreSQL info
+            - name: Gather PostgreSQL info
               community.postgresql.postgresql_info:
                 login_db: "{{ postgresql_maintenance_db }}"
                 login_user: "{{ postgresql_superuser }}"
@@ -50,6 +50,11 @@
               become: true
               become_method: community.general.sudosu
               become_user: "{{ postgresql_superuser }}"
+
+            - name: Debug postgresql_info
+              ansible.builtin.debug:
+                var: postgresql_info
+                verbosity: 3
 
             - name: Set a fact for the existing PostgreSQL databases
               ansible.builtin.set_fact:
@@ -103,4 +108,5 @@
 
   tags:
     - postgresql
+    - postgresql_info
 ...

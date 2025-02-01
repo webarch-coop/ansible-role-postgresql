@@ -82,4 +82,5 @@
 
   tags:
     - postgresql
+    - postgresql_conf
 ...
