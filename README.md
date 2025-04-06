@@ -115,6 +115,22 @@ pg_upgradecluster 11 main
 apt remove postgresql-11 postgresql-client-11
 ```
 
+Ubuntu 20.04 to 22.04:
+
+```bash
+pg_dropcluster --stop 12 main
+pg_upgradecluster 14 main
+apt remove postgresql-12 postgresql-client-12
+```
+
+Ubuntu 22.04 to 24.04:
+
+```bash
+pg_dropcluster --stop 14 main
+pg_upgradecluster 16 main
+apt remove postgresql-14 postgresql-client-14
+```
+
 The upgrade will also change the port number that PostgreSQL runs on so that both the previous version and the new version can run at the same time, this role can be used to revert the port number after the upgrade.
 
 ## References
