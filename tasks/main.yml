@@ -29,6 +29,8 @@
     - name: Validate PostgreSQL variables
       ansible.builtin.include_tasks: validate.yml
       when: postgresql_validate | bool
+      tags:
+        - postgresql_validate
 
     - name: Include apt role local fact tasks
       ansible.builtin.include_role:
