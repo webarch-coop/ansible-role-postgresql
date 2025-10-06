@@ -21,6 +21,8 @@ postgresql_psycopg_pkg:
     pkg: python3-psycopg2
   - distro: bullseye
     pkg: python3-psycopg2
+  - distro: forky
+    pkg: python3-psycopg2
   - distro: jammy
     pkg: python3-psycopg2
   - distro: noble
