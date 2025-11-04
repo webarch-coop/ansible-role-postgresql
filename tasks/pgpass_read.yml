@@ -67,8 +67,8 @@
             login_db: "{{ postgresql_db }}"
             login_host: "{{ postgresql_host }}"
             login_password: "{{ postgresql_password }}"
+            login_port: "{{ postgresql_port }}"
             login_user: "{{ postgresql_user }}"
-            port: "{{ postgresql_port }}"
           register: postgresql_user_obj_stat_info
 
         # TODO If the password check above fails delete the line and set
