@@ -47,14 +47,14 @@
     - name: Generate a PostgreSQL password and write it to .pgpass
       ansible.builtin.include_tasks: pgpass_write.yml
       when: >-
-        ( postgresql_postgres_home_pgpass_stat is defined and not postgresql_postgres_home_pgpass_stat.stat.exists | bool ) or
-        ( postgresql_password is not defined ) or ( postgresql_password is defined and postgresql_password | length == 0 )
+        ((postgresql_postgres_home_pgpass_stat is defined) and (not postgresql_postgres_home_pgpass_stat.stat.exists | bool)) or
+        (postgresql_password is not defined) or (postgresql_password is defined and postgresql_password == "null") or
+        (postgresql_password | ansible.builtin.type_debug == "NoneType")
 
     - name: PostgreSQL user present
       community.postgresql.postgresql_user:
         name: "{{ postgresql_user }}"
         password: "{{ postgresql_password }}"
-        db: "{{ postgresql_db }}"
         state: present
         login_db: "{{ postgresql_maintenance_db }}"
         login_user: "{{ postgresql_superuser }}"
@@ -66,7 +66,6 @@
     - name: PostgreSQL privs present
       community.postgresql.postgresql_privs:
         type: database
-        db: "{{ postgresql_db }}"
         role: "{{ postgresql_user }}"
         privs: "{{ postgresql_user_privs | default('ALL') }}"
         state: present

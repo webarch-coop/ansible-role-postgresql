@@ -54,12 +54,17 @@
       vars:
         postgresql_password_jmespath_query: "[?hostname == '{{ postgresql_host }}'] | [?port == '{{ postgresql_port }}'] | [?database == '{{ postgresql_db }}'] | [?username == '{{ postgresql_user }}'].password | [0]"
 
+    - name: Debug postgresql_password
+      ansible.builtin.debug:
+        var: postgresql_password
+        verbosity: 3
+
     - name: Test the password when the password, user and database are present
       block:
 
         - name: Test the PostgreSQL user password
           community.postgresql.postgresql_user_obj_stat_info:
-            db: "{{ postgresql_db }}"
+            login_db: "{{ postgresql_db }}"
             login_host: "{{ postgresql_host }}"
             login_password: "{{ postgresql_password }}"
             login_user: "{{ postgresql_user }}"
@@ -76,7 +81,7 @@
 
       when:
         - postgresql_password is defined
-        - postgresql_password | length > 0
+        - postgresql_password != "null"
         - postgresql_dbs_existing is defined
         - postgresql_dbs_existing != []
         - postgresql_users_existing is defined
